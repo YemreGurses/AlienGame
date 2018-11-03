@@ -21,9 +21,9 @@ import java.util.Set;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue
-    @Column
-    private Long _id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
+    private int id;
 
     @Column(name = "name")
     @NotEmpty(message = "*Please provide your name")
