@@ -36,13 +36,13 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/allscores")
+    @GetMapping("/scores/all")
     public List<Map<String, String>> getScores() {
         List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoard();
         return leaderBoard;
     }
 
-    @GetMapping("/weeklyscores")
+    @GetMapping("/scores/weekly")
     public List<Map<String, String>> getWeeklyScores() {
         List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoardWeekly();
         return leaderBoard;
