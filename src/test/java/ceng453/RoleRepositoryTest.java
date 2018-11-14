@@ -22,10 +22,11 @@ public class RoleRepositoryTest {
     @Test
     public void findByRole() {
 
-        Role User123 = Role.builder().role("User").id(13).build();
-        roleRepository.save(User123);
+        Role role = Role.builder().role("User").id(1).build();
+        role.setId(1);
+        roleRepository.save(role);
 
         assertNotNull(roleRepository.findByRole("User").getRole());
-        assertEquals(User123.getRole(),roleRepository.findByRole("User").getRole());
+        assertEquals(role.getRole(),roleRepository.findByRole("User").getRole());
     }
 }
