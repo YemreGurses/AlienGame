@@ -27,7 +27,7 @@ public class ScoreRepositoryImpl implements CustomScoreRepository {
 
     @Override
     public List<Map<String, String>> getLeaderBoardWeekly() {
-        return generateResponse("select U.user_id, U.name, sum(S.score) as score_sum " +
+        return generateResponse("select U.name, sum(S.score) as score_sum " +
                 "from( user U inner join score S on U.user_id = S.user_id  ) " +
                 "where S.date >= date_sub(now(), interval 7 day)" +
                 "group by U.user_id order by score_sum desc");
