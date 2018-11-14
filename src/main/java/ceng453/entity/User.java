@@ -42,7 +42,7 @@ public class User {
     private int active;
 
     @OneToMany
-    @JoinColumn(name = "score_fk")
+    @JoinColumn(name = "user_id")
     private List<Score> scoreList = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)

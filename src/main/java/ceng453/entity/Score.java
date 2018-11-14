@@ -4,6 +4,7 @@ package ceng453.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -17,5 +18,9 @@ public class Score {
 
     @Column(name = "score")
     private Integer score;
+
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
 
 }
