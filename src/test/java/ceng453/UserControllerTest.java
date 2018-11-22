@@ -34,7 +34,7 @@ public class UserControllerTest {
         User yemre = User.builder().name("yemre1").email("yemre@a").password("asdfg").build();
         userRepository.save(yemre);
 
-        List<User> userList = Arrays.asList(new User[]{furkan, yemre});
+        List<User> userList = Arrays.asList(furkan, yemre);
 
         assertNotNull(userRepository.findAll());
 

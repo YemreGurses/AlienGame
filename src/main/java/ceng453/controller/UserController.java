@@ -1,17 +1,18 @@
 package ceng453.controller;
 
 
+import ceng453.entity.Score;
 import ceng453.entity.User;
 import ceng453.repository.ScoreRepository;
 import ceng453.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -31,9 +32,15 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Optional<User> getUsers(@PathVariable Integer id) {
-        Optional<User> user = userRepository.findById(id);
+    public User getUser(@PathVariable Integer id) {
+        User user = userRepository.findById(id).get();
         return user;
+    }
+
+    @GetMapping("/users/{id}/score")
+    public List<Score> getUsersScore(@PathVariable Integer id) {
+        User user = userRepository.findById(id).get();
+        return user.getScoreList();
     }
 
     @GetMapping("/scores/all")
