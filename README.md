@@ -5,54 +5,32 @@ Java SDK 9
 
 Lombok Plug in
 
-#Security Configuration
-
-####configure(AuthenticationManagerBuilder)
-
-Allowing authentication with Spring security to move that to JDBC, defining a data source within the application. 
-
-####configure(HttpSecurity)
-
-Spring security generates a login page automatically, based on the features that are enabled and using standard values for the URL. Configuring some simple authorization on each URL using roles.
-
-####configure(WebSecurity)
-
-
-
-#WebMvcConfig
-
-passwordEncoder()
-
-Defining the simple BCryptPasswordEncoder as a bean in our configuration.
-
-#LoginController
-
-####@GET login()
-
-Login function to let registered users to log in to our application.
-
-####@GET registration()
-
-Registration function for register new users. 
-
-####@POST createNewUser(User, BindingResult)
-
-If the user wanted to be registered is already exists in the database, exception throws.
-Else save the user.
-
-####@GET home()
-
-Home page function for registered users. Handles authentication also.
-
 #UserController
 
 ####getUsers()
 
 Getting all the users in the database.
 
-####getUsers(Integer)
+####getUser(Integer)
 
 Getting the user with specific id.
+
+####addUser(User)
+
+Add the user.
+
+####updateUser(User,id)
+
+Replace the user with given id with given user.
+
+####addScore(Integer,Integer)
+
+Add the given score to the user with given id.
+
+
+####getUsersScore()
+
+Getting the score of user with given id.
 
 ####getScores()
 
@@ -61,6 +39,11 @@ Getting all the scores in the database.
 ####getWeeklyScores()
 
 Getting all the scores in a specific week.
+
+####deleteUser(Integer)
+
+Delete the user with given id.
+
 
 #ScoreRepository
 
@@ -84,7 +67,39 @@ Getting the user with specific email.
 
 #UserService
 
-####saveUser(User)
+####getAllUsers()
 
-Handles the saving the the user to the repository.
+Getting all the users in the database.
 
+####getUser(Integer)
+
+Getting the user with specific id from repository.
+
+####addUser(User)
+
+Add user to the repository.
+
+####updateUser(User,id)
+
+Replace the user with given id with given user.
+
+####addScore(Integer,Integer)
+
+Add the given score to the user with given id.
+
+
+####getUsersScore()
+
+Getting the score of user with given id.
+
+####getScores()
+
+Getting all the scores in the database.
+
+####getWeeklyScores()
+
+Getting all the scores in a specific week.
+
+####deleteUser(Integer)
+
+Delete the user with given id.
