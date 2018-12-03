@@ -27,6 +27,6 @@ public class UserRepositoryTest {
 
 
         assertNotNull(userRepository.findByEmail("furkan@a"));
-        assertEquals(furkan,userRepository.findByEmail("furkan@a"));
+        assertEquals(furkan, userRepository.findByEmail("furkan@a"));
     }
 }

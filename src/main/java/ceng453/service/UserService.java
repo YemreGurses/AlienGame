@@ -1,15 +1,16 @@
 package ceng453.service;
 
-import ceng453.entity.Role;
+import ceng453.entity.Score;
 import ceng453.entity.User;
-import ceng453.repository.RoleRepository;
+import ceng453.repository.ScoreRepository;
 import ceng453.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,22 +20,60 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private ScoreRepository scoreRepository;
 
 
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User getUser(int id) {
+        return userRepository.findById(id).get();
     }
 
-    public User saveUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setActive(1);
-        Role userRole = roleRepository.findByRole("USER");
-        user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
-        return userRepository.save(user);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
+
+    public void addUser(User user) {
+        if (user == null) return;
+        user.setPassword(Integer.toString(user.getPassword().hashCode()));
+        userRepository.save(user);
+    }
+
+    public void updateUser(User user, Integer id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser != null) {
+            userRepository.deleteById(id);
+            user.setPassword(Integer.toString(user.getPassword().hashCode()));
+            userRepository.save(user);
+        }
+    }
+
+    public void addScore(Integer id, Integer score) {
+        User user = userRepository.findById(id).get();
+        List<Score> scoreList = user.getScoreList();
+        Score score1 = Score.builder().date(new Date()).score(score).build();
+        scoreRepository.save(score1);
+        scoreList.add(score1);
+        user.setScoreList(scoreList);
+        userRepository.save(user);
+    }
+
+    public List<Score> getUsersScore(Integer id) {
+        User user = userRepository.findById(id).get();
+        return user.getScoreList();
+    }
+
+    public List<Map<String, String>> getScores() {
+        List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoard();
+        return leaderBoard;
+    }
+
+    public List<Map<String, String>> getWeeklyScores() {
+        List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoardWeekly();
+        return leaderBoard;
+    }
+
+    public void deleteUser(Integer id) {
+        userRepository.deleteById(id);
+    }
+
 
 }

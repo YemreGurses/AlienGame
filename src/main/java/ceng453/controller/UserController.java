@@ -3,13 +3,9 @@ package ceng453.controller;
 
 import ceng453.entity.Score;
 import ceng453.entity.User;
-import ceng453.repository.ScoreRepository;
-import ceng453.repository.UserRepository;
+import ceng453.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -19,46 +15,52 @@ public class UserController {
 
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-
-    @Autowired
-    private ScoreRepository scoreRepository;
 
     @GetMapping("/users")
     public List<User> getUsers() {
-        List<User> userList = userRepository.findAll();
-        return userList;
+        return userService.getAllUsers();
     }
-
 
     @GetMapping("/users/{id}")
     public User getUser(@PathVariable Integer id) {
-        User user = userRepository.findById(id).get();
-        return user;
+        return userService.getUser(id);
+    }
+
+    @PostMapping("/users")
+    public void addUser(@RequestBody User user) {
+        userService.addUser(user);
+    }
+
+    @PutMapping("/users/{id}")
+    public void updateUser(@RequestBody User user, @PathVariable Integer id) {
+        userService.updateUser(user, id);
+    }
+
+    @PostMapping("/users/{id}/{score}")
+    public void addScore(@PathVariable Integer id, @PathVariable Integer score) {
+        userService.addScore(id, score);
     }
 
     @GetMapping("/users/{id}/score")
     public List<Score> getUsersScore(@PathVariable Integer id) {
-        User user = userRepository.findById(id).get();
-        return user.getScoreList();
+        return userService.getUsersScore(id);
     }
 
     @GetMapping("/scores/all")
     public List<Map<String, String>> getScores() {
-        List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoard();
-        return leaderBoard;
+        return userService.getScores();
     }
 
     @GetMapping("/scores/weekly")
     public List<Map<String, String>> getWeeklyScores() {
-        List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoardWeekly();
-        return leaderBoard;
+        return userService.getWeeklyScores();
     }
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Integer id) {
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
     }
 
 }

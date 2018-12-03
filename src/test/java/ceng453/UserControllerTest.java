@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -38,7 +41,7 @@ public class UserControllerTest {
 
         assertNotNull(userRepository.findAll());
 
-        assertEquals(userList,userRepository.findAll());
+        assertEquals(userList, userRepository.findAll());
     }
 
     @Test
@@ -50,9 +53,8 @@ public class UserControllerTest {
         userRepository.save(yemre);
 
 
-        assertNotNull(userRepository.findById(2));
-
-        assertEquals(yemre,userRepository.findById(2).get());
+        assertNotNull(userRepository.findById(yemre.getId()));
+        assertEquals(yemre, userRepository.findById(yemre.getId()).get());
     }
 
     @Test
@@ -82,13 +84,13 @@ public class UserControllerTest {
         User yemre = User.builder().name("yemre1").email("yemre@a").password("asdfg").scoreList(scoreList2).build();
         userRepository.save(yemre);
 
-        assertEquals("70",scoreRepository.getLeaderBoard().get(0).values().toArray()[0]);
+        assertEquals("70", scoreRepository.getLeaderBoard().get(0).values().toArray()[0]);
 
-        assertEquals("yemre1",scoreRepository.getLeaderBoard().get(0).values().toArray()[1]);
+        assertEquals("yemre1", scoreRepository.getLeaderBoard().get(0).values().toArray()[1]);
 
-        assertEquals("30",scoreRepository.getLeaderBoard().get(1).values().toArray()[0]);
+        assertEquals("30", scoreRepository.getLeaderBoard().get(1).values().toArray()[0]);
 
-        assertEquals("furkan1",scoreRepository.getLeaderBoard().get(1).values().toArray()[1]);
+        assertEquals("furkan1", scoreRepository.getLeaderBoard().get(1).values().toArray()[1]);
 
     }
 

@@ -11,7 +11,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -38,15 +37,9 @@ public class User {
     @NotNull(message = "*Please provide an email")
     private String email;
 
-    @Column(name = "active")
-    private int active;
 
     @OneToMany
     @JoinColumn(name = "user_id")
     private List<Score> scoreList = new ArrayList<>();
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
 
 }
