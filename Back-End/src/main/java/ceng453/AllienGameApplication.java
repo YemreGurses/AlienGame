@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AllienGameApplication {
 
-    public static void main(String[] args) throws Throwable{
+    public static void main(String[] args) {
         SpringApplication.run(AllienGameApplication.class, args);
     }
 }
