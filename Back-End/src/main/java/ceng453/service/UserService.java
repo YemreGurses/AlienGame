@@ -62,13 +62,11 @@ public class UserService {
     }
 
     public List<Map<String, String>> getScores() {
-        List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoard();
-        return leaderBoard;
+        return scoreRepository.getLeaderBoard();
     }
 
     public List<Map<String, String>> getWeeklyScores() {
-        List<Map<String, String>> leaderBoard = scoreRepository.getLeaderBoardWeekly();
-        return leaderBoard;
+        return scoreRepository.getLeaderBoardWeekly();
     }
 
     public void deleteUser(Integer id) {
