@@ -2,6 +2,7 @@ package application;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,8 +11,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,10 +51,23 @@ public class AllienGameApplicationGUI extends Application {
         }
     };
 
-    private Parent createContent() {
+    public void mainMenuScene(Stage stage) throws IOException {
+
+        Parent mainMenu = FXMLLoader.load(getClass().getResource("/fxml/loginPage.fxml"));
+
+        Scene mainMenuScene = new Scene(mainMenu);
+
+        stage.setScene(mainMenuScene);
+
+        stage.show();
+
+    }
+
+    private Parent createContent() throws IOException {
         root.setPrefSize(600, 800);
         root.getChildren().add(player);
-
+        Image img = new Image("/images/playerShip.png");
+        player.setFill(new ImagePattern(img));
         levelLabel.relocate(0, 0);
         levelLabel.setGraphic(new ImageView(level1Image));
 
@@ -72,43 +88,50 @@ public class AllienGameApplicationGUI extends Application {
         return root;
     }
 
-    private void nextLevel(Integer level) {
+    private void nextLevel(Integer level) throws IOException {
 
         if (level == 1) {
             for (int i = 0; i < 5; i++) {
                 Item s = new Item(90 + i * 100, 100, 30, 30, "enemy", Color.BLACK);
                 root.getChildren().add(s);
+                Image img = new Image("/images/ship1.png");
+                s.setFill(new ImagePattern(img));
             }
             enemyCount = 5;
         } else if (level == 2) {
             levelLabel.setGraphic(new ImageView(level2Image));
             for (int i = 0; i < 5; i++) {
                 Item s = new Item(90 + i * 100, 100, 30, 30, "enemy", Color.RED);
-
                 root.getChildren().add(s);
+                Image img = new Image("/images/ship1.png");
+                s.setFill(new ImagePattern(img));
             }
             for (int i = 0; i < 6; i++) {
                 Item s = new Item(40 + i * 100, 150, 30, 30, "enemy", Color.RED);
-
                 root.getChildren().add(s);
+                Image img = new Image("/images/ship2.png");
+                s.setFill(new ImagePattern(img));
             }
             enemyCount = 11;
         } else if (level == 3) {
             levelLabel.setGraphic(new ImageView(level3Image));
             for (int i = 0; i < 5; i++) {
                 Item s = new Item(90 + i * 100, 100, 30, 30, "enemy", Color.YELLOW);
-
                 root.getChildren().add(s);
+                Image img = new Image("/images/ship1.png");
+                s.setFill(new ImagePattern(img));
             }
             for (int i = 0; i < 6; i++) {
                 Item s = new Item(40 + i * 100, 150, 30, 30, "enemy", Color.YELLOW);
-
                 root.getChildren().add(s);
+                Image img = new Image("/images/ship2.png");
+                s.setFill(new ImagePattern(img));
             }
             for (int i = 0; i < 5; i++) {
                 Item s = new Item(90 + i * 100, 200, 30, 30, "enemy", Color.YELLOW);
-
                 root.getChildren().add(s);
+                Image img = new Image("/images/ship3.png");
+                s.setFill(new ImagePattern(img));
             }
             enemyCount = 16;
         } else {
@@ -140,7 +163,11 @@ public class AllienGameApplicationGUI extends Application {
                         healthLabel.setText("Health : " + player.getHealth().toString() + "HP");
                         if (player.health == 0) {
                             player.dead = true;
-                            gameOverScene();
+                            try {
+                                gameOverScene();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                         s.dead = true;
                     }
@@ -161,7 +188,11 @@ public class AllienGameApplicationGUI extends Application {
                             scoreLabel.setText("Score : " + score.toString());
                             if (enemyCount == 0) {
                                 currentLevel++;
-                                nextLevel(currentLevel);
+                                try {
+                                    nextLevel(currentLevel);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         if (s.getTranslateY() < 0) {
@@ -181,7 +212,11 @@ public class AllienGameApplicationGUI extends Application {
                             scoreLabel.setText("Score : " + score.toString());
                             if (enemyCount == 0) {
                                 currentLevel++;
-                                nextLevel(currentLevel);
+                                try {
+                                    nextLevel(currentLevel);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     });
@@ -229,7 +264,7 @@ public class AllienGameApplicationGUI extends Application {
 
     }
 
-    public void playGame(Stage stage) {
+    public void playGame(Stage stage) throws IOException {
         root.getChildren().remove(0, root.getChildren().size());
         currentLevel = 1;
 
@@ -268,29 +303,26 @@ public class AllienGameApplicationGUI extends Application {
 
         stage.setTitle("Dünyayı Kurtaran Adamın Oğlu ve Uzay Gemisi");
 
-        playGame(stage);
+        mainMenuScene(stage);
 
 
     }
 
 
-    public void gameOverScene() {
-//        Pane pane = new Pane();
+    public void gameOverScene() throws IOException {
         Button restartButton = new Button("Play Again!");
         root.getChildren().remove(0, root.getChildren().size());
-        currentLevel = 0;
-        player = new Item(300, 750, 40, 40, "player", Color.PINK);
-        enemyCount = 0;
-        score = 0;
-        root.getChildren().add(restartButton);
-//        Scene scene = new Scene(pane);
-//        stage.setScene(scene);
-//        stage.show();
-        restartButton.setOnAction(event -> {
-            root.getChildren().remove(0, root.getChildren().size());
-            currentLevel += 1;
-            createContent();
-        });
+        root = FXMLLoader.load(getClass().getResource("/fxml/playGame.fxml"));
+//        currentLevel = 0;
+//        player = new Item(300, 750, 40, 40, "player", Color.PINK);
+//        enemyCount = 0;
+//        score = 0;
+//        root.getChildren().add(restartButton);
+//        restartButton.setOnAction(event -> {
+//            root.getChildren().remove(0, root.getChildren().size());
+//            currentLevel += 1;
+//            createContent();
+//        });
 
 
     }

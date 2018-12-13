@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+            prefWidth="600.0" style="-fx-background-color: BLACK;" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+    <children>
+        <ImageView fitHeight="821.0" fitWidth="612.0">
+            <image>
+                <Image url="@../images/background.png"/>
+            </image>
+        </ImageView>
+        <AnchorPane layoutX="118.0" layoutY="98.0" prefHeight="559.0" prefWidth="377.0" AnchorPane.bottomAnchor="164.0"
+                    AnchorPane.leftAnchor="117.5" AnchorPane.rightAnchor="117.5" AnchorPane.topAnchor="98.0">
+            <children>
+                <Text fill="#d02424" layoutX="30.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Allien Game " textAlignment="CENTER" wrappingWidth="317.2060546875"
+                      AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="29.7939453125">
+                    <font>
+                        <Font name="Arial Bold" size="36.0"/>
+                    </font>
+                </Text>
+                <ImageView fitHeight="74.0" fitWidth="130.0" layoutX="123.5" layoutY="98.0"
+                           AnchorPane.leftAnchor="123.5" AnchorPane.rightAnchor="123.5">
+                    <image>
+                        <Image url="@../images/allien.png"/>
+                    </image>
+                </ImageView>
+                <Text fill="WHITE" layoutX="74.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Username">
+                    <font>
+                        <Font name="Arial" size="18.0"/>
+                    </font>
+                </Text>
+                <TextField fx:id="nameField" layoutX="73.0" layoutY="321.0" prefHeight="38.0" prefWidth="230.0"
+                           AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="74.0"/>
+                <Text fill="WHITE" layoutX="74.0" layoutY="392.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Password">
+                    <font>
+                        <Font name="Arial" size="18.0"/>
+                    </font>
+                </Text>
+                <PasswordField fx:id="passwordField" layoutX="73.0" layoutY="401.0" prefHeight="38.0" prefWidth="230.0"
+                               AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="74.0"/>
+                <Button fx:id="loginButton" layoutX="74.0" layoutY="464.0" mnemonicParsing="false" prefHeight="27.0"
+                        prefWidth="99.0" onAction="#handleLoginButtonAction" text="Login"/>
+                <Button fx:id="registerButton" layoutX="193.0" layoutY="464.0" mnemonicParsing="false"
+                        onAction="#handleRegisterButtonAction" prefHeight="27.0" prefWidth="99.0" text="Register"/>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
