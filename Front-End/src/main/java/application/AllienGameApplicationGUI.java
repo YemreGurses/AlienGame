@@ -3,6 +3,7 @@ package application;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,8 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -30,6 +33,8 @@ public class AllienGameApplicationGUI extends Application {
     private Integer enemyCount = 0;
 
     private Integer score = 0;
+
+    private Stage mainStage = new Stage();
 
     private Item player = new Item(300, 750, 40, 40, "player", Color.PINK);
 
@@ -50,6 +55,7 @@ public class AllienGameApplicationGUI extends Application {
             update();
         }
     };
+
 
     public void mainMenuScene(Stage stage) throws IOException {
 
@@ -81,6 +87,7 @@ public class AllienGameApplicationGUI extends Application {
 
 
         nextLevel(currentLevel);
+
         timer.stop();
         timer.start();
 
@@ -295,6 +302,7 @@ public class AllienGameApplicationGUI extends Application {
         });
 
         stage.setScene(scene);
+        mainStage = stage;
         stage.show();
     }
 
@@ -310,19 +318,51 @@ public class AllienGameApplicationGUI extends Application {
 
 
     public void gameOverScene() throws IOException {
-        Button restartButton = new Button("Play Again!");
+
+
         root.getChildren().remove(0, root.getChildren().size());
-        root = FXMLLoader.load(getClass().getResource("/fxml/playGame.fxml"));
-//        currentLevel = 0;
-//        player = new Item(300, 750, 40, 40, "player", Color.PINK);
-//        enemyCount = 0;
-//        score = 0;
+        currentLevel = 0;
+        player = new Item(300, 750, 40, 40, "player", Color.PINK);
+        enemyCount = 0;
+        score = 0;
+
+        Parent mainMenu = FXMLLoader.load(getClass().getResource("/fxml/playGame.fxml"));
+
+        Scene mainMenuScene = new Scene(mainMenu);
+
+        mainStage.setScene(mainMenuScene);
+
+        mainStage.show();
+
+        Stage scoreStage = new Stage();
+
+        scoreStage.setMinWidth(300);
+        scoreStage.setMinHeight(150);
+        scoreStage.initModality(Modality.APPLICATION_MODAL);
+
+        Button okayButton = new Button("OKAY!");
+
+        okayButton.setOnAction(event -> {
+            scoreStage.close();
+        });
+
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(scoreLabel,okayButton);
+        layout.setAlignment(Pos.CENTER);
+        Scene scoreScene = new Scene(layout);
+        scoreStage.setScene(scoreScene);
+        scoreStage.show();
+
 //        root.getChildren().add(restartButton);
 //        restartButton.setOnAction(event -> {
-//            root.getChildren().remove(0, root.getChildren().size());
-//            currentLevel += 1;
-//            createContent();
-//        });
+////            root.getChildren().remove(0, root.getChildren().size());
+////            currentLevel += 1;
+////            try {
+////                createContent();
+////            } catch (IOException e) {
+////                e.printStackTrace();
+////            }
+////        });
 
 
     }

@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 public class Item extends Rectangle {
     boolean dead = false;
     final String type;
-    Integer health = 100;
+    Integer health = 20;
 
     Item(int x, int y, int w, int h, String type, Color color) {
         super(w, h, color);

@@ -31,14 +31,14 @@
                     </font>
                 </Button>
                 <Button fx:id="leaderBoardButton" layoutX="22.0" layoutY="403.0" mnemonicParsing="false"
-                        prefHeight="100.0" prefWidth="325.0" text="Quit"
+                        prefHeight="100.0" onAction="#handleQuitButtonAction" prefWidth="325.0" text="Quit"
                         AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                     <font>
                         <Font name="Arial Bold" size="24.0"/>
                     </font>
                 </Button>
                 <Button fx:id="quitButton" layoutX="20.0" layoutY="278.0" mnemonicParsing="false"
-                        onAction="#handleQuitButtonAction" prefHeight="100.0" prefWidth="325.0" text="Leader Board"
+                        prefHeight="100.0" prefWidth="325.0" text="Leader Board"
                         AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                     <font>
                         <Font name="Arial Bold" size="24.0"/>

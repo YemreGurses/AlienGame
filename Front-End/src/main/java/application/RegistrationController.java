@@ -1,5 +1,6 @@
 package application;
 
+import ceng453.entity.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -52,6 +53,10 @@ public class RegistrationController {
             return;
         }
 
+        User user = User.builder().name(nameField.getText()).password(passwordField.getText()).email(emailField.getText()).build();
+
+        RestServiceConsumer restServiceConsumer = new RestServiceConsumer();
+        restServiceConsumer.register(user);
 
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Parent loginPage = FXMLLoader.load(getClass().getResource("/fxml/loginPage.fxml"));
