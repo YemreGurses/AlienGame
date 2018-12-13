@@ -31,10 +31,16 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void addUser(User user) {
-        if (user == null) return;
+    public String addUser(User user) {
+        if (user == null) return "Fail";
+        if (userRepository.findByName(user.getName()) != null) {
+            if (userRepository.findByName(user.getName()).getName().equals(user.getName())) {
+                return "Username Already Exists!";
+            }
+        }
         user.setPassword(Integer.toString(user.getPassword().hashCode()));
         userRepository.save(user);
+        return "User Added";
     }
 
     public void updateUser(User user, Integer id) {
@@ -73,5 +79,18 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public String login(User user) {
+        User temp = userRepository.findByName(user.getName());
+
+        if (temp == null) {
+            return "No Player";
+        } else if (temp.getPassword().equals(Integer.toString(user.getPassword().hashCode()))) {
+            return "Logged In with ID " + Integer.toString(temp.getId());
+        } else if (!temp.getPassword().equals(Integer.toString(user.getPassword().hashCode()))) {
+            return "Wrong Password!";
+        } else {
+            return "Failed";
+        }
+    }
 
 }

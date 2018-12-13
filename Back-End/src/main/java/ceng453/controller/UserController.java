@@ -29,8 +29,8 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public void addUser(@RequestBody User user) {
-        userService.addUser(user);
+    public String addUser(@RequestBody User user) {
+        return userService.addUser(user);
     }
 
     @PutMapping("/users/{id}")
@@ -61,6 +61,11 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody User user) {
+        return userService.login(user);
     }
 
 }

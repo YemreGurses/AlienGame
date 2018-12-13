@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class AllienGameApplicationGUI extends Application {
 
 
+    private String userId;
     private Pane root = new Pane();
 
     private double t = 0;
@@ -168,7 +169,7 @@ public class AllienGameApplicationGUI extends Application {
                     if (s.getBoundsInParent().intersects(player.getBoundsInParent())) {
                         player.health -= 20;
                         healthLabel.setText("Health : " + player.getHealth().toString() + "HP");
-                        if (player.health == 0) {
+                        if (player.health <= 0) {
                             player.dead = true;
                             try {
                                 gameOverScene();
@@ -271,7 +272,8 @@ public class AllienGameApplicationGUI extends Application {
 
     }
 
-    public void playGame(Stage stage) throws IOException {
+    public void playGame(Stage stage, String id) throws IOException {
+        userId = id;
         root.getChildren().remove(0, root.getChildren().size());
         currentLevel = 1;
 
@@ -319,6 +321,8 @@ public class AllienGameApplicationGUI extends Application {
 
     public void gameOverScene() throws IOException {
 
+        RestServiceConsumer restServiceConsumer = new RestServiceConsumer();
+        restServiceConsumer.addScore(userId, score.toString());
 
         root.getChildren().remove(0, root.getChildren().size());
         currentLevel = 0;
@@ -327,6 +331,8 @@ public class AllienGameApplicationGUI extends Application {
         score = 0;
 
         Parent mainMenu = FXMLLoader.load(getClass().getResource("/fxml/playGame.fxml"));
+
+        mainMenu.setId(userId);
 
         Scene mainMenuScene = new Scene(mainMenu);
 
@@ -347,22 +353,11 @@ public class AllienGameApplicationGUI extends Application {
         });
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(scoreLabel,okayButton);
+        layout.getChildren().addAll(scoreLabel, okayButton);
         layout.setAlignment(Pos.CENTER);
         Scene scoreScene = new Scene(layout);
         scoreStage.setScene(scoreScene);
         scoreStage.show();
-
-//        root.getChildren().add(restartButton);
-//        restartButton.setOnAction(event -> {
-////            root.getChildren().remove(0, root.getChildren().size());
-////            currentLevel += 1;
-////            try {
-////                createContent();
-////            } catch (IOException e) {
-////                e.printStackTrace();
-////            }
-////        });
 
 
     }

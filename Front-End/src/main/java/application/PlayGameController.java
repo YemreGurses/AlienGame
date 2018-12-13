@@ -22,10 +22,9 @@ public class PlayGameController {
 
     @FXML
     protected void handlePlayButtonAction(ActionEvent event) throws IOException {
-
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         AllienGameApplicationGUI allienGameApplicationGUI = new AllienGameApplicationGUI();
-        allienGameApplicationGUI.playGame(currentStage);
+        allienGameApplicationGUI.playGame(currentStage, currentStage.getScene().getRoot().getId());
     }
 
     @FXML
