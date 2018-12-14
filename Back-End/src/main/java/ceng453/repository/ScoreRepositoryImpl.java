@@ -14,7 +14,7 @@ public class ScoreRepositoryImpl implements CustomScoreRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    String[] key_array = {"username", "score"};
+    private String[] key_array = {"username", "score"};
 
 
     @Override

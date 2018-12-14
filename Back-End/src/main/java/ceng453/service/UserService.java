@@ -45,7 +45,7 @@ public class UserService {
 
     public void updateUser(User user, Integer id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser != null) {
+        if (optionalUser.isPresent()) {
             userRepository.deleteById(id);
             user.setPassword(Integer.toString(user.getPassword().hashCode()));
             userRepository.save(user);
