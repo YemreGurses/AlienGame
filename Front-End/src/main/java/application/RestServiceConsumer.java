@@ -9,12 +9,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class RestServiceConsumer {
+class RestServiceConsumer {
 
-    public RestServiceConsumer() {
+    RestServiceConsumer() {
     }
 
-    public String register(User user) {
+    String register(User user) {
         try {
 
             URL url = new URL("http://localhost:8080/users");
@@ -50,25 +50,22 @@ public class RestServiceConsumer {
                     (conn.getInputStream())));
 
             String output;
-            System.out.println("Output from Server .... \n");
-            while ((output = br.readLine()) != null) {
-                System.out.println(output);
-                return output;
-            }
+            output = br.readLine();
 
             conn.disconnect();
 
+            return output;
 
         } catch (IOException e) {
 
             e.printStackTrace();
+            return "Fail";
 
         }
 
-        return "Fail";
     }
 
-    public String login(User user) {
+    String login(User user) {
         try {
 
             URL url = new URL("http://localhost:8080/login");
@@ -101,25 +98,21 @@ public class RestServiceConsumer {
                     (conn.getInputStream())));
 
             String output;
-            System.out.println("Output from Server .... \n");
-            while ((output = br.readLine()) != null) {
-                System.out.println(output);
-                return output;
-            }
+            output = br.readLine();
+
 
             conn.disconnect();
 
+            return output;
 
         } catch (IOException e) {
 
             e.printStackTrace();
-
+            return "Fail";
         }
-
-        return "Fail";
     }
 
-    public void addScore(String userId, String score) {
+    void addScore(String userId, String score) {
         try {
 
             String scoreUrl = "http://localhost:8080/users/" + userId + "/" + score;
@@ -140,14 +133,6 @@ public class RestServiceConsumer {
                         + conn.getResponseCode());
             }
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
-
-            String output;
-            System.out.println("Output from Server .... \n");
-            while ((output = br.readLine()) != null) {
-                System.out.println(output);
-            }
 
             conn.disconnect();
 

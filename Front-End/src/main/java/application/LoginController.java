@@ -18,8 +18,6 @@ import java.io.IOException;
 
 public class LoginController {
 
-    public String userId;
-
     @FXML
     private TextField nameField;
 
@@ -28,9 +26,6 @@ public class LoginController {
 
     @FXML
     private Button loginButton;
-
-    @FXML
-    private Button registerButton;
 
     @FXML
     protected void handleRegisterButtonAction(ActionEvent event) throws IOException {
@@ -64,19 +59,17 @@ public class LoginController {
         if (output.equals("No Player")) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "No Player Found!");
-            return;
         } else if (output.equals("Wrong Password!")) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "" +
                             "Wrong Password!");
-            return;
         } else if (output.contains("Logged In")) {
             AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Confirmed!",
                     "Login is Succesfull!");
             String loggedIn[] = output.split(" ");
-            userId = loggedIn[4];
+            String userId = loggedIn[4];
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Parent loginPage = FXMLLoader.load(getClass().getResource("/fxml/playGame.fxml"));
+            Parent loginPage = FXMLLoader.load(getClass().getResource("/fxml/mainMenu.fxml"));
             loginPage.setId(userId);
             Scene scene = new Scene(loginPage, 600, 800);
             currentStage.setScene(scene);

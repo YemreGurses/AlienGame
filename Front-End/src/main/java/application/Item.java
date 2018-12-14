@@ -3,13 +3,21 @@ package application;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Item extends Rectangle {
+class Item extends Rectangle {
     boolean dead = false;
     final String type;
-    Integer health = 20;
+    Integer health = 100;
 
     Item(int x, int y, int w, int h, String type, Color color) {
         super(w, h, color);
+
+        this.type = type;
+        setTranslateX(x);
+        setTranslateY(y);
+    }
+
+    Item(int x, int y, int w, int h, String type) {
+        super(w, h);
 
         this.type = type;
         setTranslateX(x);

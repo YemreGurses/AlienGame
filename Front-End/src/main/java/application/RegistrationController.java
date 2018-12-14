@@ -33,9 +33,6 @@ public class RegistrationController {
     private Button submitButton;
 
     @FXML
-    private Button cancelButton;
-
-    @FXML
     protected void handleSubmitButtonAction(ActionEvent event) throws IOException {
         Window owner = submitButton.getScene().getWindow();
         if (nameField.getText().isEmpty()) {
@@ -98,7 +95,7 @@ public class RegistrationController {
         currentStage.show();
     }
 
-    public static boolean isValidEmailAddress(String email) {
+    private static boolean isValidEmailAddress(String email) {
         boolean result = true;
         try {
             InternetAddress emailAddr = new InternetAddress(email);

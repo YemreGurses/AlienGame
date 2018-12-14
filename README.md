@@ -1,4 +1,4 @@
-#Allien Game Application
+#Alien Game Application
 
 #Requirements: 
 Java SDK 9

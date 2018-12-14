@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class AllienGameApplication {
+public class AlienGameApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AllienGameApplication.class, args);
+        SpringApplication.run(AlienGameApplication.class, args);
     }
 }
 
