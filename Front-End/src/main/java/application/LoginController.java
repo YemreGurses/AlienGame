@@ -18,6 +18,10 @@ import java.io.IOException;
 
 public class LoginController {
 
+    private static final String registrationFormUrl = "/fxml/registrationForm.fxml";
+    private static final String mainMenuUrl = "/fxml/mainMenu.fxml";
+
+
     @FXML
     private TextField nameField;
 
@@ -31,7 +35,7 @@ public class LoginController {
     protected void handleRegisterButtonAction(ActionEvent event) throws IOException {
 
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Parent registerPage = FXMLLoader.load(getClass().getResource("/fxml/registrationForm.fxml"));
+        Parent registerPage = FXMLLoader.load(getClass().getResource(registrationFormUrl));
         Scene scene = new Scene(registerPage, 600, 800);
         currentStage.setScene(scene);
         currentStage.show();
@@ -64,12 +68,10 @@ public class LoginController {
                     "" +
                             "Wrong Password!");
         } else if (output.contains("Logged In")) {
-            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Confirmed!",
-                    "Login is Succesfull!");
             String loggedIn[] = output.split(" ");
             String userId = loggedIn[4];
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Parent loginPage = FXMLLoader.load(getClass().getResource("/fxml/mainMenu.fxml"));
+            Parent loginPage = FXMLLoader.load(getClass().getResource(mainMenuUrl));
             loginPage.setId(userId);
             Scene scene = new Scene(loginPage, 600, 800);
             currentStage.setScene(scene);

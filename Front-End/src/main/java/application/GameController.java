@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -74,27 +75,22 @@ class GameController {
         Scene scene = new Scene(createContent());
 
         scene.setOnKeyPressed(key -> {
-            switch (key.getCode()) {
-                case A:
-                    if (player.getTranslateX() <= 0) break;
+            if (key.getCode() == KeyCode.A) {
+                if (player.getTranslateX() > 0)
                     player.moveLeft();
-                    break;
-                case W:
-                    if (player.getTranslateY() <= 0) break;
+            } else if (key.getCode() == KeyCode.W) {
+                if (player.getTranslateY() > 0)
                     player.moveUp();
-                    break;
-                case D:
-                    if (player.getTranslateX() + 40 >= widthOfScreen) break;
+            } else if (key.getCode() == KeyCode.D) {
+                if (player.getTranslateX() + 40 < widthOfScreen)
                     player.moveRight();
-                    break;
-                case S:
-                    if (player.getTranslateY() + 40 >= heightOfScreen) break;
+            } else if (key.getCode() == KeyCode.S) {
+                if (player.getTranslateY() + 40 < heightOfScreen)
                     player.moveDown();
-                    break;
-                case SPACE:
-                    shoot(player);
-                    break;
+            } else if (key.getCode() == KeyCode.SPACE) {
+                shoot(player);
             }
+
         });
 
         stage.setScene(scene);
@@ -188,85 +184,83 @@ class GameController {
     private void update() {
         timeCounter += 0.016;
         items().forEach(item -> {
-            switch (item.type) {
+            if (item.type.equals("enemybullet")) {
 
-                case "enemybullet":
-                    item.moveDownBullet();
+                item.moveDownBullet();
 
-                    if (item.getBoundsInParent().intersects(player.getBoundsInParent())) {
-                        player.health -= 20;
-                        healthLabel.setText("Health : " + player.getHealth().toString() + "HP");
-                        if (player.health <= 0) {
-                            player.dead = true;
-                            try {
-                                gameOverScene();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                if (item.getBoundsInParent().intersects(player.getBoundsInParent())) {
+                    player.health -= 20;
+                    healthLabel.setText("Health : " + player.getHealth().toString() + "HP");
+                    if (player.health <= 0) {
+                        player.dead = true;
+                        try {
+                            gameOverScene();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+                    }
+                    item.dead = true;
+                }
+                if (item.getTranslateY() > 800) {
+                    item.dead = true;
+                }
+            } else if (item.type.equals("playerbullet")) {
+                item.moveUp();
+
+                items().stream().filter(e -> e.type.equals("enemy")).forEach(enemy -> {
+                    if (item.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+                        enemy.dead = true;
+                        item.dead = true;
+                        enemyCount--;
+                        score += 10;
+                        scoreLabel.setText("Score : " + score.toString());
+                        nextLevel();
+                    }
+                    if (item.getTranslateY() < 0) {
                         item.dead = true;
                     }
-                    if (item.getTranslateY() > 800) {
-                        item.dead = true;
+                });
+
+            } else if (item.type.equals("player")) {
+
+                items().stream().filter(e -> e.type.equals("enemy")).forEach(enemy -> {
+                    if (item.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+                        enemy.dead = true;
+                        enemyCount--;
+                        score += 10;
+                        scoreLabel.setText("Score : " + score.toString());
+                        nextLevel();
                     }
-                    break;
+                });
 
-                case "playerbullet":
-                    item.moveUp();
-
-                    items().stream().filter(e -> e.type.equals("enemy")).forEach(enemy -> {
-                        if (item.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
-                            enemy.dead = true;
-                            item.dead = true;
-                            enemyCount--;
-                            score += 10;
-                            scoreLabel.setText("Score : " + score.toString());
-                            nextLevel();
-                        }
-                        if (item.getTranslateY() < 0) {
-                            item.dead = true;
-                        }
-                    });
-
-                    break;
-
-                case "player":
-
-                    items().stream().filter(e -> e.type.equals("enemy")).forEach(enemy -> {
-                        if (item.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
-                            enemy.dead = true;
-                            enemyCount--;
-                            score += 10;
-                            scoreLabel.setText("Score : " + score.toString());
-                            nextLevel();
-                        }
-                    });
-
-                    break;
-
-                case "enemy":
-                    if (timeCounter > 1) {
-                        if (Math.random() < 0.5) {
-                            shoot(item);
-                        }
+            } else if (item.type.equals("enemy")) {
+                if (timeCounter > 1) {
+                    if (Math.random() < 0.5) {
+                        shoot(item);
                     }
+                }
 
-                    break;
             }
+
         });
 
-        root.getChildren().removeIf(n -> {
-            if (n.getClass().getName().contains("Item")) {
-                Item s = (Item) n;
-                return s.dead;
-            } else {
-                return false;
-            }
-        });
+        root.getChildren().
+
+                removeIf(n ->
+
+                {
+                    if (n.getClass().getName().contains("Item")) {
+                        Item s = (Item) n;
+                        return s.dead;
+                    } else {
+                        return false;
+                    }
+                });
 
         if (timeCounter > 1) {
             timeCounter = 0;
         }
+
     }
 
     private void nextLevel() {
