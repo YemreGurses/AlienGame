@@ -24,7 +24,10 @@ public class UserService {
 
 
     public User getUser(int id) {
-        return userRepository.findById(id).get();
+        if (userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get();
+        }
+        return null;
     }
 
     public List<User> getAllUsers() {
@@ -53,18 +56,23 @@ public class UserService {
     }
 
     public void addScore(Integer id, Integer score) {
-        User user = userRepository.findById(id).get();
-        List<Score> scoreList = user.getScoreList();
-        Score score1 = Score.builder().date(new Date()).score(score).build();
-        scoreRepository.save(score1);
-        scoreList.add(score1);
-        user.setScoreList(scoreList);
-        userRepository.save(user);
+        if (userRepository.findById(id).isPresent()) {
+            User user = userRepository.findById(id).get();
+            List<Score> scoreList = user.getScoreList();
+            Score score1 = Score.builder().date(new Date()).score(score).build();
+            scoreRepository.save(score1);
+            scoreList.add(score1);
+            user.setScoreList(scoreList);
+            userRepository.save(user);
+        }
     }
 
     public List<Score> getUsersScore(Integer id) {
-        User user = userRepository.findById(id).get();
-        return user.getScoreList();
+        if (userRepository.findById(id).isPresent()) {
+            User user = userRepository.findById(id).get();
+            return user.getScoreList();
+        }
+        return null;
     }
 
     public List<Map<String, String>> getScores() {
@@ -79,17 +87,17 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public String login(User user) {
+    public User login(User user) {
         User temp = userRepository.findByName(user.getName());
 
         if (temp == null) {
-            return "No Player";
+            return null;
         } else if (temp.getPassword().equals(Integer.toString(user.getPassword().hashCode()))) {
-            return "Logged In with ID " + Integer.toString(temp.getId());
+            return temp;
         } else if (!temp.getPassword().equals(Integer.toString(user.getPassword().hashCode()))) {
-            return "Wrong Password!";
+            return null;
         } else {
-            return "Failed";
+            return null;
         }
     }
 
