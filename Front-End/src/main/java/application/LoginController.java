@@ -71,9 +71,9 @@ public class LoginController {
             String loggedIn[] = output.split(" ");
             String userId = loggedIn[4];
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Parent loginPage = FXMLLoader.load(getClass().getResource(mainMenuUrl));
-            loginPage.setId(userId);
-            Scene scene = new Scene(loginPage, 600, 800);
+            Parent mainMenu = FXMLLoader.load(getClass().getResource(mainMenuUrl));
+            mainMenu.setId(userId);
+            Scene scene = new Scene(mainMenu, 600, 800);
             currentStage.setScene(scene);
             currentStage.show();
         }

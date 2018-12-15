@@ -61,6 +61,7 @@ public class LeaderBoardController implements Initializable {
 
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Parent mainMenu = FXMLLoader.load(getClass().getResource(mainMenuUrl));
+        mainMenu.setId(currentStage.getScene().getRoot().getId());
         Scene scene = new Scene(mainMenu, 600, 800);
         currentStage.setScene(scene);
         currentStage.show();

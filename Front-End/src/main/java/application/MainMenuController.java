@@ -36,6 +36,7 @@ public class MainMenuController {
     protected void handleLeaderBoardButtonAction(ActionEvent event) throws IOException {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Parent registerPage = FXMLLoader.load(getClass().getResource(leaderBoardUrl));
+        registerPage.setId(currentStage.getScene().getRoot().getId());
         Scene scene = new Scene(registerPage, 600, 800);
         currentStage.setScene(scene);
         currentStage.show();
