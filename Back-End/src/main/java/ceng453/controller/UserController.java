@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public User login(@RequestBody User user) {
         return userService.login(user);
     }
 

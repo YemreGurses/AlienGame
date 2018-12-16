@@ -68,7 +68,6 @@ class GameController {
     };
 
     void playGame(Stage stage, String id) throws IOException {
-        System.out.println(id);
         userId = id;
         root.getChildren().remove(0, root.getChildren().size());
         currentLevel = 1;

@@ -59,17 +59,13 @@ public class LoginController {
         User user = User.builder().name(nameField.getText()).password(passwordField.getText()).build();
 
         RestServiceConsumer restServiceConsumer = new RestServiceConsumer();
-        String output = restServiceConsumer.login(user);
-        if (output.equals("No Player")) {
+        User loggedInUser = restServiceConsumer.login(user);
+        if (loggedInUser == null) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "No Player Found!");
-        } else if (output.equals("Wrong Password!")) {
-            AlertHelper.showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
-                    "" +
-                            "Wrong Password!");
-        } else if (output.contains("Logged In")) {
-            String loggedIn[] = output.split(" ");
-            String userId = loggedIn[4];
+                    "Username or Password is Wrong!");
+        } else {
+            Integer id = loggedInUser.getId();
+            String userId = id.toString();
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Parent mainMenu = FXMLLoader.load(getClass().getResource(mainMenuUrl));
             mainMenu.setId(userId);
@@ -77,7 +73,6 @@ public class LoginController {
             currentStage.setScene(scene);
             currentStage.show();
         }
-
-
+        
     }
 }

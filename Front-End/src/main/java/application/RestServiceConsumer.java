@@ -1,6 +1,9 @@
 package application;
 
 import ceng453.entity.User;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -67,7 +70,7 @@ class RestServiceConsumer {
 
     }
 
-    String login(User user) {
+    User login(User user) {
         try {
             String loginUrl = restUrl.concat("login");
             URL url = new URL(loginUrl);
@@ -80,7 +83,6 @@ class RestServiceConsumer {
             String password = user.getPassword();
 
             String input = "{\"name\":\"";
-
             input = input.concat(name);
             input = input.concat("\",\"password\":\"");
             input = input.concat(password);
@@ -99,18 +101,32 @@ class RestServiceConsumer {
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
 
-            String output;
-            output = br.readLine();
 
+            String output;
+            String loginUser = "";
+
+            while ((output = br.readLine()) != null) {
+                loginUser = loginUser.concat(output);
+            }
+
+            if (loginUser.equals("")) {
+                conn.disconnect();
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
+            mapper.addMixIn(Player.class, PlayerMixIn.class);
+            mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
             conn.disconnect();
 
-            return output;
+            return mapper.readValue(loginUser, User.class);
 
         } catch (IOException e) {
 
             e.printStackTrace();
-            return "Fail";
+            return null;
         }
     }
 
