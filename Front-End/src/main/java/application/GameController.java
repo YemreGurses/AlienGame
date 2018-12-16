@@ -67,6 +67,13 @@ class GameController {
         }
     };
 
+    /**
+     * This method creates content for game and set Scene for the game.
+     *
+     * @param stage Stage of the game
+     * @param id Id of active User
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     void playGame(Stage stage, String id) throws IOException {
         userId = id;
         root.getChildren().remove(0, root.getChildren().size());
@@ -98,6 +105,12 @@ class GameController {
         stage.show();
     }
 
+    /**
+     * This method creates labels for game screen and starts timer for the game.
+     *
+     * @return Parent to set the scene
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     private Parent createContent() throws IOException {
         root.setPrefSize(600, 800);
         root.getChildren().add(player);
@@ -124,6 +137,12 @@ class GameController {
         return root;
     }
 
+    /**
+     * This method creates game objects for given level.
+     *
+     * @param level Level to prepare
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     private void nextLevelPreparer(Integer level) throws IOException {
 
         if (level == 1) {
@@ -147,6 +166,9 @@ class GameController {
 
     }
 
+    /**
+     * This method creates hard aliens.
+     */
     private void createHardAlien() {
         for (int i = 0; i < 5; i++) {
             Item s = new Item(75 + i * 100, 200, 50, 50, "enemy");
@@ -156,6 +178,9 @@ class GameController {
         }
     }
 
+    /**
+     * This method creates medium aliens.
+     */
     private void createMediumAlien() {
         for (int i = 0; i < 6; i++) {
             Item s = new Item(25 + i * 100, 150, 50, 50, "enemy");
@@ -165,6 +190,9 @@ class GameController {
         }
     }
 
+    /**
+     * This method creates easy aliens.
+     */
     private void createEasyAlien() {
         for (int i = 0; i < 5; i++) {
             Item s = new Item(75 + i * 100, 100, 50, 50, "enemy");
@@ -174,13 +202,20 @@ class GameController {
         }
     }
 
+    /**
+     * This method gets all game objects and return them as a list.
+     *
+     * @return List of items
+     */
     private List<Item> items() {
         List<Object> itemList = root.getChildren().stream().filter(n -> n.getClass().getName().contains("Item")).collect(Collectors.toList());
 
         return itemList.stream().map(n -> (Item) n).collect(Collectors.toList());
     }
 
-
+    /**
+     * This method updates game screen with timer and creates random fires from aliens and also remove objects when they die.
+     */
     private void update() {
         timeCounter += 0.016;
         items().forEach(item -> {
@@ -263,6 +298,9 @@ class GameController {
 
     }
 
+    /**
+     * This method gets next level.
+     */
     private void nextLevel() {
         if (enemyCount == 0) {
             currentLevel++;
@@ -274,7 +312,11 @@ class GameController {
         }
     }
 
-
+    /**
+     * This method creates fires for player and also for aliens.
+     *
+     * @param item Item to create bullet
+     */
     private void shoot(Item item) {
         if (item.type.equals("player")) {
 
@@ -289,7 +331,11 @@ class GameController {
 
     }
 
-
+    /**
+     * This method prepares game over screen and load Main Menu.
+     *
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     private void gameOverScene() throws IOException {
 
         timer.stop();

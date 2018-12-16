@@ -15,7 +15,12 @@ public class MainMenuController {
     private static final String loginPageUrl = "/fxml/loginPage.fxml";
     private static final String leaderBoardUrl = "/fxml/leaderBoard.fxml";
 
-
+    /**
+     * This method starts the game for given player id.
+     *
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handlePlayButtonAction(ActionEvent event) throws IOException {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -23,6 +28,12 @@ public class MainMenuController {
         gameController.playGame(currentStage, currentStage.getScene().getRoot().getId());
     }
 
+    /**
+     * This method prepares Login Page.
+     *
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handleLogoutButtonAction(ActionEvent event) throws IOException {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -32,6 +43,11 @@ public class MainMenuController {
         currentStage.show();
     }
 
+    /**
+     * This method prepares Leader Board page.
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handleLeaderBoardButtonAction(ActionEvent event) throws IOException {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -38,6 +38,12 @@ public class LeaderBoardController implements Initializable {
     @FXML
     private TableColumn<Player, String> allTimeScoreColumn;
 
+    /**
+     * This method initialize the leader boards.
+     *
+     * @param location URL
+     * @param resources Resource Bundle
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         weeklyUserColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
@@ -56,6 +62,12 @@ public class LeaderBoardController implements Initializable {
         }
     }
 
+    /**
+     * This method prepares the Main Menu screen and redirect there.
+     *
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handleMainMenuButtonAction(ActionEvent event) throws IOException {
 
@@ -67,6 +79,13 @@ public class LeaderBoardController implements Initializable {
         currentStage.show();
     }
 
+    /**
+     * This method gets time and prepares the leader board.
+     *
+     * @param time Leader board of given time
+     * @return List of players
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     private List<Player> parseLeaderBoardList(String time) throws IOException {
         RestServiceConsumer restServiceConsumer = new RestServiceConsumer();
         String input = restServiceConsumer.getScoreboard(time);

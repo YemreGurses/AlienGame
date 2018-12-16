@@ -31,6 +31,12 @@ public class LoginController {
     @FXML
     private Button loginButton;
 
+    /**
+     * This method prepares the Registratin Form page.
+     *
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handleRegisterButtonAction(ActionEvent event) throws IOException {
 
@@ -41,6 +47,12 @@ public class LoginController {
         currentStage.show();
     }
 
+    /**
+     * This method gets the user information and checks it if it is okay or not then prepares Main Menu page.
+     *
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handleLoginButtonAction(ActionEvent event) throws IOException {
         Window owner = loginButton.getScene().getWindow();
@@ -73,6 +85,6 @@ public class LoginController {
             currentStage.setScene(scene);
             currentStage.show();
         }
-        
+
     }
 }

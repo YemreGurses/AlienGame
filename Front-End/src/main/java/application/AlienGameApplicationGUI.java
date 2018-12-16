@@ -12,6 +12,12 @@ public class AlienGameApplicationGUI extends Application {
 
     private static final String loginPageURL = "/fxml/loginPage.fxml";
 
+    /**
+     * This method loads Login Page and set Scene to that page.
+     *
+     * @param stage Stage to set scene
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     private void mainMenuScene(Stage stage) throws IOException {
 
         Parent mainMenu = FXMLLoader.load(getClass().getResource(loginPageURL));
@@ -24,7 +30,12 @@ public class AlienGameApplicationGUI extends Application {
 
     }
 
-
+    /**
+     * This method starts the application.
+     *
+     * @param stage Stage
+     * @throws Exception Exception message
+     */
     @Override
     public void start(Stage stage) throws Exception {
 

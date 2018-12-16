@@ -33,6 +33,12 @@ public class RegistrationController {
     @FXML
     private Button submitButton;
 
+    /**
+     * This method checks the given information and save the user to database.
+     *
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handleSubmitButtonAction(ActionEvent event) throws IOException {
         Window owner = submitButton.getScene().getWindow();
@@ -85,6 +91,12 @@ public class RegistrationController {
 
     }
 
+    /**
+     * This method prepares Login Page.
+     *
+     * @param event Event of button
+     * @throws IOException It throws an exception if it is not load to FXML
+     */
     @FXML
     protected void handleCancelButtonAction(ActionEvent event) throws IOException {
 
@@ -96,6 +108,12 @@ public class RegistrationController {
 
     }
 
+    /**
+     * This method check if given email address valid or not.
+     *
+     * @param email Email to check
+     * @return True if email is valid,otherwise false
+     */
     private static boolean isValidEmailAddress(String email) {
         boolean result = true;
         try {

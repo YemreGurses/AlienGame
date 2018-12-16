@@ -8,6 +8,16 @@ class Item extends Rectangle {
     final String type;
     Integer health = 100;
 
+    /**
+     * Constructor for bullets.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param w Width
+     * @param h Height
+     * @param type Type of item
+     * @param color Color of item
+     */
     Item(int x, int y, int w, int h, String type, Color color) {
         super(w, h, color);
 
@@ -16,6 +26,16 @@ class Item extends Rectangle {
         setTranslateY(y);
     }
 
+
+    /**
+     * Constructor for player and aliens.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param w Width
+     * @param h Height
+     * @param type Type of item
+     */
     Item(int x, int y, int w, int h, String type) {
         super(w, h);
 

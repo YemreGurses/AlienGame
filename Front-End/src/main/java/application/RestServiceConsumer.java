@@ -19,6 +19,12 @@ class RestServiceConsumer {
     RestServiceConsumer() {
     }
 
+    /**
+     * This method connects the rest service and post request to save the user.
+     *
+     * @param user User to register
+     * @return Output from given connection
+     */
     String register(User user) {
         try {
             String registerUrl = restUrl.concat("users");
@@ -70,6 +76,12 @@ class RestServiceConsumer {
 
     }
 
+    /**
+     * This method post request to rest service and return the result as an user.
+     *
+     * @param user User to login
+     * @return User
+     */
     User login(User user) {
         try {
             String loginUrl = restUrl.concat("login");
@@ -130,6 +142,12 @@ class RestServiceConsumer {
         }
     }
 
+    /**
+     * This method takes score and user id and post request the rest service the save that score to user with given id.
+     *
+     * @param userId User id to set score
+     * @param score Score to set
+     */
     void addScore(String userId, String score) {
         try {
 
@@ -157,6 +175,13 @@ class RestServiceConsumer {
         }
 
     }
+
+    /**
+     * This method gets leader board from rest service and return as an Json.
+     *
+     * @param time Time to get leader board
+     * @return Leader board
+     */
 
     String getScoreboard(String time) {
         try {
