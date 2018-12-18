@@ -5,6 +5,21 @@ Java SDK 9
 
 Lombok Plug in
 
+Internet connection
+
+#How to play?
+
+Use 'W' to go up, 'S' to go down, 'D' to go right and 'A' to go to left.
+Use 'Space' to fire.
+
+That's all. Have fun :)
+
+#Front-End
+
+JavaFX is used for the application. Also, JavaXML scene files is used for better user experience. 
+
+#Back-End
+
 #UserController
 
 ####getUsers()
