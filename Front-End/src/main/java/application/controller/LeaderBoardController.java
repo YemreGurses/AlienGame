@@ -1,5 +1,8 @@
-package application;
+package application.controller;
 
+import application.consumer.RestServiceConsumer;
+import application.entity.Player;
+import application.entity.PlayerMixIn;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -41,7 +44,7 @@ public class LeaderBoardController implements Initializable {
     /**
      * This method initialize the leader boards.
      *
-     * @param location URL
+     * @param location  URL
      * @param resources Resource Bundle
      */
     @Override

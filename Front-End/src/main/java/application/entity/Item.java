@@ -1,12 +1,12 @@
-package application;
+package application.entity;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-class Item extends Rectangle {
-    boolean dead = false;
-    final String type;
-    Integer health = 100;
+public class Item extends Rectangle {
+    public boolean dead = false;
+    public final String type;
+    public Integer health = 100;
 
     /**
      * Constructor for bullets.
@@ -18,7 +18,7 @@ class Item extends Rectangle {
      * @param type Type of item
      * @param color Color of item
      */
-    Item(int x, int y, int w, int h, String type, Color color) {
+    public Item(int x, int y, int w, int h, String type, Color color) {
         super(w, h, color);
 
         this.type = type;
@@ -36,7 +36,7 @@ class Item extends Rectangle {
      * @param h Height
      * @param type Type of item
      */
-    Item(int x, int y, int w, int h, String type) {
+    public Item(int x, int y, int w, int h, String type) {
         super(w, h);
 
         this.type = type;
@@ -44,28 +44,28 @@ class Item extends Rectangle {
         setTranslateY(y);
     }
 
-    Integer getHealth() {
+    public Integer getHealth() {
         return health;
     }
 
 
-    void moveLeft() {
+    public void moveLeft() {
         setTranslateX(getTranslateX() - 15);
     }
 
-    void moveRight() {
+    public void moveRight() {
         setTranslateX(getTranslateX() + 15);
     }
 
-    void moveUp() {
+    public void moveUp() {
         setTranslateY(getTranslateY() - 15);
     }
 
-    void moveDown() {
+    public void moveDown() {
         setTranslateY(getTranslateY() + 15);
     }
 
-    void moveDownBullet() {
+    public void moveDownBullet() {
         setTranslateY(getTranslateY() + 10);
     }
 }

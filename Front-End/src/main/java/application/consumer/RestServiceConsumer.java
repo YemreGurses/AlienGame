@@ -1,5 +1,7 @@
-package application;
+package application.consumer;
 
+import application.entity.Player;
+import application.entity.PlayerMixIn;
 import ceng453.entity.User;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -12,11 +14,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class RestServiceConsumer {
+public class RestServiceConsumer {
 
     private static final String restUrl = "http://localhost:8080/";
 
-    RestServiceConsumer() {
+    public RestServiceConsumer() {
     }
 
     /**
@@ -25,7 +27,7 @@ class RestServiceConsumer {
      * @param user User to register
      * @return Output from given connection
      */
-    String register(User user) {
+    public String register(User user) {
         try {
             String registerUrl = restUrl.concat("users");
             URL url = new URL(registerUrl);
@@ -82,7 +84,7 @@ class RestServiceConsumer {
      * @param user User to login
      * @return User
      */
-    User login(User user) {
+    public User login(User user) {
         try {
             String loginUrl = restUrl.concat("login");
             URL url = new URL(loginUrl);
@@ -146,9 +148,9 @@ class RestServiceConsumer {
      * This method takes score and user id and post request the rest service the save that score to user with given id.
      *
      * @param userId User id to set score
-     * @param score Score to set
+     * @param score  Score to set
      */
-    void addScore(String userId, String score) {
+    public void addScore(String userId, String score) {
         try {
 
             String scoreUrl = restUrl + "users/" + userId + "/" + score;
@@ -183,7 +185,7 @@ class RestServiceConsumer {
      * @return Leader board
      */
 
-    String getScoreboard(String time) {
+    public String getScoreboard(String time) {
         try {
             String leaderBoardURL = restUrl + "scores/";
             if (time.equals("weekly")) {

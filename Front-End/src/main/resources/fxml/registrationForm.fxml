@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
             prefWidth="600.0" style="-fx-background-color: BLACK;" xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.RegistrationController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.RegistrationController">
     <ImageView fitHeight="821.0" fitWidth="612.0">
         <Image url="@../images/background.png"/>
     </ImageView>

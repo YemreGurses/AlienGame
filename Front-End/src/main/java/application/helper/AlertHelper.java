@@ -1,11 +1,11 @@
-package application;
+package application.helper;
 
 
 import javafx.scene.control.Alert;
 import javafx.stage.Window;
 
 
-class AlertHelper {
+public class AlertHelper {
     /**
      * This method creates alerts with the given title and message.
      *
@@ -14,7 +14,7 @@ class AlertHelper {
      * @param title Title to set
      * @param message Message to show
      */
-    static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);

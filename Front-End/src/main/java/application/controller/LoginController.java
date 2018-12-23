@@ -1,5 +1,7 @@
-package application;
+package application.controller;
 
+import application.consumer.RestServiceConsumer;
+import application.helper.AlertHelper;
 import ceng453.entity.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

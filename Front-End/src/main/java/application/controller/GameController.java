@@ -1,5 +1,8 @@
-package application;
+package application.controller;
 
+import application.consumer.RestServiceConsumer;
+import application.entity.Item;
+import application.helper.AlertHelper;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -71,7 +74,7 @@ class GameController {
      * This method creates content for game and set Scene for the game.
      *
      * @param stage Stage of the game
-     * @param id Id of active User
+     * @param id    Id of active User
      * @throws IOException It throws an exception if it is not load to FXML
      */
     void playGame(Stage stage, String id) throws IOException {

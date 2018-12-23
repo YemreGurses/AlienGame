@@ -1,4 +1,4 @@
-package application;
+package application.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,6 +45,7 @@ public class MainMenuController {
 
     /**
      * This method prepares Leader Board page.
+     *
      * @param event Event of button
      * @throws IOException It throws an exception if it is not load to FXML
      */
