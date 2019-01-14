@@ -2,7 +2,12 @@ package application.controller;
 
 import application.consumer.RestServiceConsumer;
 import application.entity.Item;
+import application.entity.Player;
+import application.entity.PlayerMixIn;
 import application.helper.AlertHelper;
+import ceng453.entity.User;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -50,6 +55,8 @@ class GameController {
 
     private Integer score = 0;
 
+    private Integer pattern = 0;
+
     private Stage mainStage = new Stage();
 
     private Item player = new Item(270, 740, 60, 60, "player");
@@ -64,6 +71,9 @@ class GameController {
     private Label levelLabel = new Label();
 
     private Label scoreLabel = new Label();
+
+    private Label bossHealthLabel = new Label();
+
 
     private Label healthLabel = new Label();
 
@@ -84,7 +94,7 @@ class GameController {
     void playGame(Stage stage, String id) throws IOException {
         userId = id;
         root.getChildren().remove(0, root.getChildren().size());
-        currentLevel = 1;
+        currentLevel = 4;
 
         Scene scene = new Scene(createContent());
 
@@ -168,8 +178,10 @@ class GameController {
             enemyCount = 16;
         } else if (level == 4) {
             root.getChildren().remove(levelLabel);
-            healthLabel.setText("Health : " + finalBoss.getHealth().toString() + "HP");
             createFinalAlien();
+            bossHealthLabel.relocate(20, 30);
+            bossHealthLabel.setText("Boss Health : " + finalBoss.getHealth().toString() + "HP");
+            root.getChildren().add(bossHealthLabel);
             enemyCount = 1;
         } else {
             gameOverScene();
@@ -179,10 +191,10 @@ class GameController {
     }
 
     /**
-     * This method creates hard aliens.
+     * This method creates final boss.
      */
     private void createFinalAlien() {
-        finalBoss.health = 200;
+        finalBoss.health = 500;
         root.getChildren().add(finalBoss);
         Image img = new Image(FINAL_ALIEN_IMAGE_URL);
         finalBoss.setFill(new ImagePattern(img));
@@ -268,19 +280,22 @@ class GameController {
                 items().stream().filter(e -> e.type.equals("enemy")).forEach(enemy -> {
                     if (item.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
                         if (currentLevel == 4) {
-                            enemy.health -= 20;
-                            healthLabel.setText("Health : " + finalBoss.getHealth().toString() + "HP");
+                            finalBoss.health -= 20;
+                            item.dead = true;
+                            bossHealthLabel.setText("Health : " + finalBoss.getHealth().toString() + "HP");
                             if (finalBoss.health <= 0) {
+                                enemyCount--;
                                 finalBoss.dead = true;
                                 nextLevel();
                             }
+                        } else {
+                            enemy.dead = true;
+                            item.dead = true;
+                            enemyCount--;
+                            score += 10;
+                            scoreLabel.setText("Score : " + score.toString());
+                            nextLevel();
                         }
-                        enemy.dead = true;
-                        item.dead = true;
-                        enemyCount--;
-                        score += 10;
-                        scoreLabel.setText("Score : " + score.toString());
-                        nextLevel();
                     }
                     if (item.getTranslateY() < 0) {
                         item.dead = true;
@@ -300,11 +315,18 @@ class GameController {
                 });
 
             } else if (item.type.equals("enemy")) {
-                if (timeCounter > 1) {
-                    if (Math.random() < 0.5) {
-                        shoot(item);
+                if (currentLevel == 4) {
+                    if (timeCounter > 1) {
+                        bossShoot();
+                    }
+                } else {
+                    if (timeCounter > 1) {
+                        if (Math.random() < 0.5) {
+                            shoot(item);
+                        }
                     }
                 }
+
 
             }
 
@@ -313,7 +335,6 @@ class GameController {
         root.getChildren().
 
                 removeIf(n ->
-
                 {
                     if (n.getClass().getName().contains("Item")) {
                         Item s = (Item) n;
@@ -344,24 +365,49 @@ class GameController {
     }
 
     /**
-     * This method creates fires for player and also for aliens.
+     * This method creates fires for boss with a pattern which we created
      */
     private void bossShoot() {
-        Item s1 = new Item((int) finalBoss.getTranslateX() + 40 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s2 = new Item((int) finalBoss.getTranslateX() + 80 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s3 = new Item((int) finalBoss.getTranslateX() + 120 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s4 = new Item((int) finalBoss.getTranslateX() + 160 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s5 = new Item((int) finalBoss.getTranslateX() + 200 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s6 = new Item((int) finalBoss.getTranslateX() + 240 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s7 = new Item((int) finalBoss.getTranslateX() + 280 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s8 = new Item((int) finalBoss.getTranslateX() + 320 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s9 = new Item((int) finalBoss.getTranslateX() + 360 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s10 = new Item((int) finalBoss.getTranslateX() + 400 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s11 = new Item((int) finalBoss.getTranslateX() + 440 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s12 = new Item((int) finalBoss.getTranslateX() + 480 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
-        Item s13 = new Item((int) finalBoss.getTranslateX() + 520 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s1 = new Item((int) finalBoss.getTranslateX() + 40, (int) finalBoss.getTranslateY() + 160, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s2 = new Item((int) finalBoss.getTranslateX() + 80, (int) finalBoss.getTranslateY() + 80, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s3 = new Item((int) finalBoss.getTranslateX() + 120, (int) finalBoss.getTranslateY() + 160, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s4 = new Item((int) finalBoss.getTranslateX() + 160, (int) finalBoss.getTranslateY() + 240, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s5 = new Item((int) finalBoss.getTranslateX() + 200, (int) finalBoss.getTranslateY() + 80, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s6 = new Item((int) finalBoss.getTranslateX() + 240, (int) finalBoss.getTranslateY() + 240, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s7 = new Item((int) finalBoss.getTranslateX() + 280, (int) finalBoss.getTranslateY() + 160, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s8 = new Item((int) finalBoss.getTranslateX() + 320, (int) finalBoss.getTranslateY() + 240, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s9 = new Item((int) finalBoss.getTranslateX() + 360, (int) finalBoss.getTranslateY() + 80, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s10 = new Item((int) finalBoss.getTranslateX() + 400, (int) finalBoss.getTranslateY() + 240, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s11 = new Item((int) finalBoss.getTranslateX() + 440, (int) finalBoss.getTranslateY() + 160, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s12 = new Item((int) finalBoss.getTranslateX() + 480, (int) finalBoss.getTranslateY() + 80, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s13 = new Item((int) finalBoss.getTranslateX() + 520, (int) finalBoss.getTranslateY() + 160, 5, 10, finalBoss.type + "bullet", Color.BLACK);
 
-        root.getChildren().add(s);
+        if ((pattern % 8) == 0) {
+            root.getChildren().addAll(s2, s4, s6, s8, s9, s13);
+            pattern++;
+        } else if ((pattern % 8) == 1) {
+            root.getChildren().addAll(s1, s3, s8, s9, s10);
+            pattern++;
+        } else if ((pattern % 8) == 2) {
+            root.getChildren().addAll(s2, s3, s8, s9, s10, s11, s13);
+            pattern++;
+        } else if ((pattern % 8) == 3) {
+            root.getChildren().addAll(s1, s7, s8, s10, s11, s12);
+            pattern++;
+        } else if ((pattern % 8) == 4) {
+            root.getChildren().addAll(s2, s5, s6, s7, s12, s13);
+            pattern++;
+        } else if ((pattern % 8) == 5) {
+            root.getChildren().addAll(s1, s3, s6, s9, s10, s12);
+            pattern++;
+        } else if ((pattern % 8) == 6) {
+            root.getChildren().addAll(s3, s6, s7, s11, s13);
+            pattern++;
+        } else if ((pattern % 8) == 7) {
+            root.getChildren().addAll(s2, s5, s6, s8, s12);
+            pattern = 0;
+        }
+
 
     }
 
@@ -395,11 +441,14 @@ class GameController {
 
         Window owner = mainStage.getScene().getWindow();
 
-        AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
-                "Your Score is " + score.toString() + "!");
-
         RestServiceConsumer restServiceConsumer = new RestServiceConsumer();
         restServiceConsumer.addScore(userId, score.toString());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
+        mapper.addMixIn(Player.class, PlayerMixIn.class);
+        User winner = mapper.readValue(restServiceConsumer.getUser(userId), User.class);
+        AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                "Winner is " + winner.getName() + "!");
 
 
         Parent mainMenu = FXMLLoader.load(getClass().getResource(MAIN_MENU_URL));

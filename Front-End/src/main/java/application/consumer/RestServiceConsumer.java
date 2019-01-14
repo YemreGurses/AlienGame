@@ -225,4 +225,40 @@ public class RestServiceConsumer {
 
         }
     }
+
+    public String getUser(String userId) {
+        try {
+            String userUrl = REST_URL + "users/" + userId ;
+            URL url = new URL(userUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            String output;
+            String userName = "";
+            while ((output = br.readLine()) != null) {
+                userName = userName.concat(output);
+            }
+
+            conn.disconnect();
+
+            return userName;
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+            return null;
+
+        }
+    }
 }

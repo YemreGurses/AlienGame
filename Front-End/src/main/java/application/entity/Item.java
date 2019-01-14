@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 public class Item extends Rectangle {
     public boolean dead = false;
     public final String type;
-    public Integer health = 100;
+    public Integer health = 5000000;
 
     /**
      * Constructor for bullets.
