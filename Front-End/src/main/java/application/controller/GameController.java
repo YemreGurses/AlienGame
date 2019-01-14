@@ -27,6 +27,8 @@ class GameController {
     private static final String EASY_ALIEN_IMAGE_URL = "/images/ship1.png";
     private static final String MEDIUM_ALIEN_IMAGE_URL = "/images/ship2.png";
     private static final String HARD_ALIEN_IMAGE_URL = "/images/ship3.png";
+    private static final String FINAL_ALIEN_IMAGE_URL = "/images/ship4.png";
+
 
     private static final String PLAYER_SHIP_IMAGE_URL = "/images/playerShip.png";
 
@@ -51,6 +53,8 @@ class GameController {
     private Stage mainStage = new Stage();
 
     private Item player = new Item(270, 740, 60, 60, "player");
+
+    private Item finalBoss = new Item(20, 100, 560, 240, "enemy");
 
 
     private Image level1Image = new Image(getClass().getResourceAsStream("/images/level1.png"));
@@ -162,12 +166,28 @@ class GameController {
             createMediumAlien();
             createHardAlien();
             enemyCount = 16;
+        } else if (level == 4) {
+            root.getChildren().remove(levelLabel);
+            healthLabel.setText("Health : " + finalBoss.getHealth().toString() + "HP");
+            createFinalAlien();
+            enemyCount = 1;
         } else {
             gameOverScene();
         }
 
 
     }
+
+    /**
+     * This method creates hard aliens.
+     */
+    private void createFinalAlien() {
+        finalBoss.health = 200;
+        root.getChildren().add(finalBoss);
+        Image img = new Image(FINAL_ALIEN_IMAGE_URL);
+        finalBoss.setFill(new ImagePattern(img));
+    }
+
 
     /**
      * This method creates hard aliens.
@@ -247,6 +267,14 @@ class GameController {
 
                 items().stream().filter(e -> e.type.equals("enemy")).forEach(enemy -> {
                     if (item.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+                        if (currentLevel == 4) {
+                            enemy.health -= 20;
+                            healthLabel.setText("Health : " + finalBoss.getHealth().toString() + "HP");
+                            if (finalBoss.health <= 0) {
+                                finalBoss.dead = true;
+                                nextLevel();
+                            }
+                        }
                         enemy.dead = true;
                         item.dead = true;
                         enemyCount--;
@@ -313,6 +341,28 @@ class GameController {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * This method creates fires for player and also for aliens.
+     */
+    private void bossShoot() {
+        Item s1 = new Item((int) finalBoss.getTranslateX() + 40 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s2 = new Item((int) finalBoss.getTranslateX() + 80 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s3 = new Item((int) finalBoss.getTranslateX() + 120 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s4 = new Item((int) finalBoss.getTranslateX() + 160 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s5 = new Item((int) finalBoss.getTranslateX() + 200 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s6 = new Item((int) finalBoss.getTranslateX() + 240 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s7 = new Item((int) finalBoss.getTranslateX() + 280 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s8 = new Item((int) finalBoss.getTranslateX() + 320 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s9 = new Item((int) finalBoss.getTranslateX() + 360 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s10 = new Item((int) finalBoss.getTranslateX() + 400 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s11 = new Item((int) finalBoss.getTranslateX() + 440 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s12 = new Item((int) finalBoss.getTranslateX() + 480 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+        Item s13 = new Item((int) finalBoss.getTranslateX() + 520 , (int) finalBoss.getTranslateY() + 30, 5, 10, finalBoss.type + "bullet", Color.BLACK);
+
+        root.getChildren().add(s);
+
     }
 
     /**
