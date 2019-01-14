@@ -21,7 +21,7 @@ import java.io.IOException;
 
 public class RegistrationController {
 
-    private static final String loginPageUrl = "/fxml/loginPage.fxml";
+    private static final String LOGIN_PAGE_URL = "/fxml/loginPage.fxml";
 
     @FXML
     private TextField nameField;
@@ -85,7 +85,7 @@ public class RegistrationController {
             AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Confirmed!",
                     "Registration is Succesfull!");
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Parent loginPage = FXMLLoader.load(getClass().getResource(loginPageUrl));
+            Parent loginPage = FXMLLoader.load(getClass().getResource(LOGIN_PAGE_URL));
             Scene scene = new Scene(loginPage, 600, 800);
             currentStage.setScene(scene);
             currentStage.show();
@@ -103,7 +103,7 @@ public class RegistrationController {
     protected void handleCancelButtonAction(ActionEvent event) throws IOException {
 
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Parent loginPage = FXMLLoader.load(getClass().getResource(loginPageUrl));
+        Parent loginPage = FXMLLoader.load(getClass().getResource(LOGIN_PAGE_URL));
         Scene scene = new Scene(loginPage, 600, 800);
         currentStage.setScene(scene);
         currentStage.show();

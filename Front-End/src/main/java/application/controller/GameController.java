@@ -24,16 +24,16 @@ import java.util.stream.Collectors;
 
 class GameController {
 
-    private static final String easyAlienImageURL = "/images/ship1.png";
-    private static final String mediumAlienImageURL = "/images/ship2.png";
-    private static final String hardAlienImageURL = "/images/ship3.png";
+    private static final String EASY_ALIEN_IMAGE_URL = "/images/ship1.png";
+    private static final String MEDIUM_ALIEN_IMAGE_URL = "/images/ship2.png";
+    private static final String HARD_ALIEN_IMAGE_URL = "/images/ship3.png";
 
-    private static final String playerShipImageURL = "/images/playerShip.png";
+    private static final String PLAYER_SHIP_IMAGE_URL = "/images/playerShip.png";
 
-    private static final String mainMenuURL = "/fxml/mainMenu.fxml";
+    private static final String MAIN_MENU_URL = "/fxml/mainMenu.fxml";
 
-    private static final Integer widthOfScreen = 600;
-    private static final Integer heightOfScreen = 800;
+    private static final Integer WIDTH_OF_SCREEN = 600;
+    private static final Integer HEIGHT_OF_SCREEN = 800;
 
 
     private String userId;
@@ -92,10 +92,10 @@ class GameController {
                 if (player.getTranslateY() > 0)
                     player.moveUp();
             } else if (key.getCode() == KeyCode.D) {
-                if (player.getTranslateX() + 40 < widthOfScreen)
+                if (player.getTranslateX() + 40 < WIDTH_OF_SCREEN)
                     player.moveRight();
             } else if (key.getCode() == KeyCode.S) {
-                if (player.getTranslateY() + 40 < heightOfScreen)
+                if (player.getTranslateY() + 40 < HEIGHT_OF_SCREEN)
                     player.moveDown();
             } else if (key.getCode() == KeyCode.SPACE) {
                 shoot(player);
@@ -117,7 +117,7 @@ class GameController {
     private Parent createContent() throws IOException {
         root.setPrefSize(600, 800);
         root.getChildren().add(player);
-        Image img = new Image(playerShipImageURL);
+        Image img = new Image(PLAYER_SHIP_IMAGE_URL);
         player.setFill(new ImagePattern(img));
         levelLabel.relocate(0, 0);
         levelLabel.setGraphic(new ImageView(level1Image));
@@ -176,7 +176,7 @@ class GameController {
         for (int i = 0; i < 5; i++) {
             Item s = new Item(75 + i * 100, 200, 50, 50, "enemy");
             root.getChildren().add(s);
-            Image img = new Image(hardAlienImageURL);
+            Image img = new Image(HARD_ALIEN_IMAGE_URL);
             s.setFill(new ImagePattern(img));
         }
     }
@@ -188,7 +188,7 @@ class GameController {
         for (int i = 0; i < 6; i++) {
             Item s = new Item(25 + i * 100, 150, 50, 50, "enemy");
             root.getChildren().add(s);
-            Image img = new Image(mediumAlienImageURL);
+            Image img = new Image(MEDIUM_ALIEN_IMAGE_URL);
             s.setFill(new ImagePattern(img));
         }
     }
@@ -200,7 +200,7 @@ class GameController {
         for (int i = 0; i < 5; i++) {
             Item s = new Item(75 + i * 100, 100, 50, 50, "enemy");
             root.getChildren().add(s);
-            Image img = new Image(easyAlienImageURL);
+            Image img = new Image(EASY_ALIEN_IMAGE_URL);
             s.setFill(new ImagePattern(img));
         }
     }
@@ -352,7 +352,7 @@ class GameController {
         restServiceConsumer.addScore(userId, score.toString());
 
 
-        Parent mainMenu = FXMLLoader.load(getClass().getResource(mainMenuURL));
+        Parent mainMenu = FXMLLoader.load(getClass().getResource(MAIN_MENU_URL));
 
         mainMenu.setId(userId);
 

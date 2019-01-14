@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class LeaderBoardController implements Initializable {
 
-    private static final String mainMenuUrl = "/fxml/mainMenu.fxml";
+    private static final String MAIN_MENU_URL = "/fxml/mainMenu.fxml";
 
     @FXML
     private TableView<Player> weeklyTableView;
@@ -75,7 +75,7 @@ public class LeaderBoardController implements Initializable {
     protected void handleMainMenuButtonAction(ActionEvent event) throws IOException {
 
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Parent mainMenu = FXMLLoader.load(getClass().getResource(mainMenuUrl));
+        Parent mainMenu = FXMLLoader.load(getClass().getResource(MAIN_MENU_URL));
         mainMenu.setId(currentStage.getScene().getRoot().getId());
         Scene scene = new Scene(mainMenu, 600, 800);
         currentStage.setScene(scene);

@@ -20,8 +20,8 @@ import java.io.IOException;
 
 public class LoginController {
 
-    private static final String registrationFormUrl = "/fxml/registrationForm.fxml";
-    private static final String mainMenuUrl = "/fxml/mainMenu.fxml";
+    private static final String REGISTRATION_FORM_URL = "/fxml/registrationForm.fxml";
+    private static final String MAIN_MENU_URL = "/fxml/mainMenu.fxml";
 
 
     @FXML
@@ -43,7 +43,7 @@ public class LoginController {
     protected void handleRegisterButtonAction(ActionEvent event) throws IOException {
 
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Parent registerPage = FXMLLoader.load(getClass().getResource(registrationFormUrl));
+        Parent registerPage = FXMLLoader.load(getClass().getResource(REGISTRATION_FORM_URL));
         Scene scene = new Scene(registerPage, 600, 800);
         currentStage.setScene(scene);
         currentStage.show();
@@ -81,7 +81,7 @@ public class LoginController {
             Integer id = loggedInUser.getId();
             String userId = id.toString();
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Parent mainMenu = FXMLLoader.load(getClass().getResource(mainMenuUrl));
+            Parent mainMenu = FXMLLoader.load(getClass().getResource(MAIN_MENU_URL));
             mainMenu.setId(userId);
             Scene scene = new Scene(mainMenu, 600, 800);
             currentStage.setScene(scene);

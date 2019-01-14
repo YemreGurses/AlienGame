@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class AlienGameApplicationGUI extends Application {
 
-    private static final String loginPageURL = "/fxml/loginPage.fxml";
+    private static final String LOGIN_PAGE_URL = "/fxml/loginPage.fxml";
 
     /**
      * This method loads Login Page and set Scene to that page.
@@ -20,7 +20,7 @@ public class AlienGameApplicationGUI extends Application {
      */
     private void mainMenuScene(Stage stage) throws IOException {
 
-        Parent mainMenu = FXMLLoader.load(getClass().getResource(loginPageURL));
+        Parent mainMenu = FXMLLoader.load(getClass().getResource(LOGIN_PAGE_URL));
 
         Scene mainMenuScene = new Scene(mainMenu);
 

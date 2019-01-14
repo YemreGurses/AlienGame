@@ -16,7 +16,7 @@ import java.net.URL;
 
 public class RestServiceConsumer {
 
-    private static final String restUrl = "http://localhost:8080/";
+    private static final String REST_URL = "http://localhost:8080/";
 
     public RestServiceConsumer() {
     }
@@ -29,7 +29,7 @@ public class RestServiceConsumer {
      */
     public String register(User user) {
         try {
-            String registerUrl = restUrl.concat("users");
+            String registerUrl = REST_URL.concat("users");
             URL url = new URL(registerUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -86,7 +86,7 @@ public class RestServiceConsumer {
      */
     public User login(User user) {
         try {
-            String loginUrl = restUrl.concat("login");
+            String loginUrl = REST_URL.concat("login");
             URL url = new URL(loginUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -153,7 +153,7 @@ public class RestServiceConsumer {
     public void addScore(String userId, String score) {
         try {
 
-            String scoreUrl = restUrl + "users/" + userId + "/" + score;
+            String scoreUrl = REST_URL + "users/" + userId + "/" + score;
             URL url = new URL(scoreUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -187,7 +187,7 @@ public class RestServiceConsumer {
 
     public String getScoreboard(String time) {
         try {
-            String leaderBoardURL = restUrl + "scores/";
+            String leaderBoardURL = REST_URL + "scores/";
             if (time.equals("weekly")) {
                 leaderBoardURL = leaderBoardURL.concat("weekly");
             } else {
