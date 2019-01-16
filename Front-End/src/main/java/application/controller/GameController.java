@@ -9,6 +9,7 @@ import ceng453.entity.User;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,11 +24,19 @@ import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 class GameController {
+
+    private static final String SERVER_IP = "127.0.0.1";
+    private final static int SERVER_PORT = 1234;
 
     private static final String EASY_ALIEN_IMAGE_URL = "/images/ship1.png";
     private static final String MEDIUM_ALIEN_IMAGE_URL = "/images/ship2.png";
@@ -35,7 +44,9 @@ class GameController {
     private static final String FINAL_ALIEN_IMAGE_URL = "/images/ship4.png";
 
 
-    private static final String PLAYER_SHIP_IMAGE_URL = "/images/playerShip.png";
+    private static final String PLAYER_SHIP_IMAGE_URL = "/images/player1.png";
+    private static final String PLAYER2_SHIP_IMAGE_URL = "/images/player2.png";
+
 
     private static final String MAIN_MENU_URL = "/fxml/mainMenu.fxml";
 
@@ -51,6 +62,10 @@ class GameController {
 
     private Integer currentLevel = 0;
 
+    private Integer otherUserID = 0;
+
+    private Integer winnerID = 0;
+
     private Integer enemyCount = 0;
 
     private Integer score = 0;
@@ -59,9 +74,13 @@ class GameController {
 
     private Stage mainStage = new Stage();
 
-    private Item player = new Item(270, 740, 60, 60, "player");
+    private Item player = new Item(270, 740, 60, 60, "player", 1);
 
-    private Item finalBoss = new Item(20, 100, 560, 240, "enemy");
+    private Item player2 = new Item(270, 740, 60, 60, "player", 2);
+
+    private Item finalBoss = new Item(20, 100, 560, 240, "enemy", 0);
+
+    private Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
 
     private Image level1Image = new Image(getClass().getResourceAsStream("/images/level1.png"));
@@ -94,11 +113,76 @@ class GameController {
     void playGame(Stage stage, String id) throws IOException {
         userId = id;
         root.getChildren().remove(0, root.getChildren().size());
-        currentLevel = 4;
+        currentLevel = 3;
+
+        InetAddress ip = InetAddress.getByName(SERVER_IP);
+
+        Socket s = new Socket(ip, SERVER_PORT);
+
+        DataInputStream dis = new DataInputStream(s.getInputStream());
+        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+        Thread readMessage = new Thread(() -> {
+
+            while (true) {
+                try {
+                    String msg = dis.readUTF();
+                    System.out.println(msg);
+                    if (msg.equals("shoot")) {
+                        Platform.runLater(() -> shoot(player2));
+                    } else if (msg.contains("waiting")) {
+                        otherUserID = Integer.valueOf(msg.split("-")[1]);
+                    } else if (msg.equals("level4")) {
+                    } else if (msg.equals("start")) {
+                        TimeUnit.SECONDS.sleep(3);
+                        Platform.runLater(() -> {
+                            timer.start();
+                            alert.close();
+                        });
+
+                    } else {
+                        String[] coordinate = msg.split("-");
+                        player2.setTranslateX(Double.valueOf(coordinate[0]));
+                        player2.setTranslateY(Double.valueOf(coordinate[1]));
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        readMessage.start();
 
         Scene scene = new Scene(createContent());
-
         scene.setOnKeyPressed(key -> {
+            Thread sendMessage = new Thread(() -> {
+
+                String message;
+
+                if (currentLevel == 5) {
+                    message = "logout";
+                } else if (currentLevel == 4) {
+                    if (key.getCode() == KeyCode.SPACE) {
+                        message = "shoot";
+                    } else {
+                        double x = player.getTranslateX();
+                        double y = player.getTranslateY();
+                        message = Double.toString(x) + "-" + Double.toString(y);
+                    }
+                } else {
+                    message = "waiting-" + userId;
+                }
+
+                try {
+                    dos.writeUTF(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            });
             if (key.getCode() == KeyCode.A) {
                 if (player.getTranslateX() > 0)
                     player.moveLeft();
@@ -114,12 +198,28 @@ class GameController {
             } else if (key.getCode() == KeyCode.SPACE) {
                 shoot(player);
             }
+            sendMessage.start();
 
         });
+        stage.setOnCloseRequest(event -> {
 
+            String closeMessage = "logout";
+
+            try {
+                dos.writeUTF(closeMessage);
+                s.close();
+                dos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Platform.exit();
+            System.exit(0);
+        });
         stage.setScene(scene);
         mainStage = stage;
         stage.show();
+
+
     }
 
     /**
@@ -173,16 +273,50 @@ class GameController {
         } else if (level == 3) {
             levelLabel.setGraphic(new ImageView(level3Image));
             createEasyAlien();
-            createMediumAlien();
-            createHardAlien();
-            enemyCount = 16;
+//            createMediumAlien();
+//            createHardAlien();
+            enemyCount = 1;
         } else if (level == 4) {
+            player.health = 200;
+            healthLabel.setText("Health : " + player.getHealth().toString() + "HP");
+            removeBullets();
             root.getChildren().remove(levelLabel);
             createFinalAlien();
+            Image img = new Image(PLAYER2_SHIP_IMAGE_URL);
+            player2.setFill(new ImagePattern(img));
+            root.getChildren().add(player2);
+            player.setTranslateX(270);
+            player.setTranslateY(740);
             bossHealthLabel.relocate(20, 30);
             bossHealthLabel.setText("Boss Health : " + finalBoss.getHealth().toString() + "HP");
             root.getChildren().add(bossHealthLabel);
             enemyCount = 1;
+            timer.stop();
+            Window owner = mainStage.getScene().getWindow();
+
+            InetAddress ip = InetAddress.getByName(SERVER_IP);
+
+            Socket s = new Socket(ip, SERVER_PORT);
+
+            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+            String message = "level4";
+
+            try {
+                dos.writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            s.close();
+            dos.close();
+
+            alert.setTitle("Waiting for other player!");
+            alert.setHeaderText(null);
+            alert.setContentText("Waiting for another player this screen will close automatically when other user connected and game will start immediately!!!");
+            alert.initOwner(owner);
+            alert.show();
+
+
         } else {
             gameOverScene();
         }
@@ -206,7 +340,7 @@ class GameController {
      */
     private void createHardAlien() {
         for (int i = 0; i < 5; i++) {
-            Item s = new Item(75 + i * 100, 200, 50, 50, "enemy");
+            Item s = new Item(75 + i * 100, 200, 50, 50, "enemy", 0);
             root.getChildren().add(s);
             Image img = new Image(HARD_ALIEN_IMAGE_URL);
             s.setFill(new ImagePattern(img));
@@ -218,7 +352,7 @@ class GameController {
      */
     private void createMediumAlien() {
         for (int i = 0; i < 6; i++) {
-            Item s = new Item(25 + i * 100, 150, 50, 50, "enemy");
+            Item s = new Item(25 + i * 100, 150, 50, 50, "enemy", 0);
             root.getChildren().add(s);
             Image img = new Image(MEDIUM_ALIEN_IMAGE_URL);
             s.setFill(new ImagePattern(img));
@@ -229,8 +363,8 @@ class GameController {
      * This method creates easy aliens.
      */
     private void createEasyAlien() {
-        for (int i = 0; i < 5; i++) {
-            Item s = new Item(75 + i * 100, 100, 50, 50, "enemy");
+        for (int i = 0; i < 1; i++) {
+            Item s = new Item(75 + i * 100, 100, 50, 50, "enemy", 0);
             root.getChildren().add(s);
             Image img = new Image(EASY_ALIEN_IMAGE_URL);
             s.setFill(new ImagePattern(img));
@@ -264,6 +398,18 @@ class GameController {
                     if (player.health <= 0) {
                         player.dead = true;
                         try {
+                            removeItems();
+                            gameOverScene();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    item.dead = true;
+                } else if (item.getBoundsInParent().intersects(player2.getBoundsInParent())) {
+                    player2.health -= 20;
+                    if (player2.health <= 0) {
+                        player2.dead = true;
+                        try {
                             gameOverScene();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -284,8 +430,14 @@ class GameController {
                             item.dead = true;
                             bossHealthLabel.setText("Health : " + finalBoss.getHealth().toString() + "HP");
                             if (finalBoss.health <= 0) {
+                                if (item.player == 1) {
+                                    winnerID = Integer.valueOf(userId);
+                                } else if (item.player == 2) {
+                                    winnerID = otherUserID;
+                                }
                                 enemyCount--;
                                 finalBoss.dead = true;
+                                removeItems();
                                 nextLevel();
                             }
                         } else {
@@ -294,6 +446,7 @@ class GameController {
                             enemyCount--;
                             score += 10;
                             scoreLabel.setText("Score : " + score.toString());
+                            removeItems();
                             nextLevel();
                         }
                     }
@@ -310,6 +463,7 @@ class GameController {
                         enemyCount--;
                         score += 10;
                         scoreLabel.setText("Score : " + score.toString());
+                        removeItems();
                         nextLevel();
                     }
                 });
@@ -332,6 +486,15 @@ class GameController {
 
         });
 
+        removeItems();
+
+        if (timeCounter > 1) {
+            timeCounter = 0;
+        }
+
+    }
+
+    private void removeItems() {
         root.getChildren().
 
                 removeIf(n ->
@@ -343,11 +506,20 @@ class GameController {
                         return false;
                     }
                 });
+    }
 
-        if (timeCounter > 1) {
-            timeCounter = 0;
-        }
+    private void removeBullets() {
+        root.getChildren().
 
+                removeIf(n ->
+                {
+                    if (n.getClass().getName().contains("Item")) {
+                        Item s = (Item) n;
+                        return s.type.equals("enemybullet");
+                    } else {
+                        return false;
+                    }
+                });
     }
 
     /**
@@ -420,6 +592,11 @@ class GameController {
         if (item.type.equals("player")) {
 
             Item s = new Item((int) item.getTranslateX() + 30, (int) item.getTranslateY() + 30, 5, 10, item.type + "bullet", Color.ORANGE);
+            if (item.getPlayer() == 1) {
+                s.player = 1;
+            } else if (item.getPlayer() == 2) {
+                s.player = 2;
+            }
             root.getChildren().add(s);
 
         } else {
@@ -436,8 +613,27 @@ class GameController {
      * @throws IOException It throws an exception if it is not load to FXML
      */
     private void gameOverScene() throws IOException {
-
         timer.stop();
+
+        InetAddress ip = InetAddress.getByName(SERVER_IP);
+
+        // establish the connection
+        Socket s = new Socket(ip, SERVER_PORT);
+
+        // obtaining input and out streams
+        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+        String message = "logout";
+
+        try {
+            // write on the output stream
+            dos.writeUTF(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        s.close();
+        dos.close();
+
 
         Window owner = mainStage.getScene().getWindow();
 
@@ -446,9 +642,20 @@ class GameController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
         mapper.addMixIn(Player.class, PlayerMixIn.class);
-        User winner = mapper.readValue(restServiceConsumer.getUser(userId), User.class);
-        AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
-                "Winner is " + winner.getName() + "!");
+        User winner2 = mapper.readValue(restServiceConsumer.getUser(userId), User.class);
+        User winner3 = mapper.readValue(restServiceConsumer.getUser(otherUserID.toString()), User.class);
+
+        if (player.dead) {
+            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                    "Winner is " + winner3.getName() + "!");
+        } else if (player2.dead) {
+            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                    "Winner is " + winner2.getName() + "!");
+        } else {
+            User winner = mapper.readValue(restServiceConsumer.getUser(winnerID.toString()), User.class);
+            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                    "Winner is " + winner.getName() + "!");
+        }
 
 
         Parent mainMenu = FXMLLoader.load(getClass().getResource(MAIN_MENU_URL));

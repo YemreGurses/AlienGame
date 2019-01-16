@@ -6,16 +6,17 @@ import javafx.scene.shape.Rectangle;
 public class Item extends Rectangle {
     public boolean dead = false;
     public final String type;
-    public Integer health = 5000000;
+    public Integer health = 200;
+    public Integer player = 0;
 
     /**
      * Constructor for bullets.
      *
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @param w Width
-     * @param h Height
-     * @param type Type of item
+     * @param x     X coordinate
+     * @param y     Y coordinate
+     * @param w     Width
+     * @param h     Height
+     * @param type  Type of item
      * @param color Color of item
      */
     public Item(int x, int y, int w, int h, String type, Color color) {
@@ -30,15 +31,15 @@ public class Item extends Rectangle {
     /**
      * Constructor for player and aliens.
      *
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @param w Width
-     * @param h Height
+     * @param x    X coordinate
+     * @param y    Y coordinate
+     * @param w    Width
+     * @param h    Height
      * @param type Type of item
      */
-    public Item(int x, int y, int w, int h, String type) {
+    public Item(int x, int y, int w, int h, String type, Integer player) {
         super(w, h);
-
+        this.player = player;
         this.type = type;
         setTranslateX(x);
         setTranslateY(y);
@@ -48,6 +49,10 @@ public class Item extends Rectangle {
         return health;
     }
 
+
+    public Integer getPlayer() {
+        return player;
+    }
 
     public void moveLeft() {
         setTranslateX(getTranslateX() - 15);
@@ -68,4 +73,5 @@ public class Item extends Rectangle {
     public void moveDownBullet() {
         setTranslateY(getTranslateY() + 10);
     }
+
 }
