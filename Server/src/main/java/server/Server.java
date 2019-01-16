@@ -11,7 +11,7 @@ public class Server {
 
     static Vector<ClientHandler> clientHandlers = new Vector<>();
 
-    private static Integer clientNumber = 0;
+    static Integer clientNumber = 0;
     static Integer counter = 0;
 
     public static void main(String[] args) throws IOException {
@@ -80,6 +80,17 @@ class ClientHandler implements Runnable {
                     }
                     Server.clientHandlers.clear();
                     break;
+                } else if (received.contains("close")) {
+                    this.dos.close();
+                    this.dis.close();
+                    this.s.close();
+                    Server.clientHandlers.remove(this);
+                    if (Server.counter == 1 && received.split("-")[1].equals("4")) {
+                        Server.counter = 0;
+                    }
+                    if (this.name.equals("client 1")) {
+                        Server.clientNumber = 1;
+                    }
                 } else if (received.equals("level4")) {
                     Server.counter++;
                     if (Server.counter == 2) {
@@ -89,6 +100,11 @@ class ClientHandler implements Runnable {
                         Server.counter = 0;
                     }
                 } else if (received.contains("user")) {
+                    if (Server.clientHandlers.get(0).name.equals("client 1")) {
+                        ClientHandler clientHandler = Server.clientHandlers.get(1);
+                        Server.clientHandlers.set(1, Server.clientHandlers.get(0));
+                        Server.clientHandlers.set(0, clientHandler);
+                    }
                     if (this.name.equals("client 0")) {
                         Server.clientHandlers.get(1).dos.writeUTF(received);
                         System.out.println("0dan 1e" + received);

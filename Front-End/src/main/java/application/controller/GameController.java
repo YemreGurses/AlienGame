@@ -209,7 +209,7 @@ class GameController {
         });
         stage.setOnCloseRequest(event -> {
 
-            String closeMessage = "logout";
+            String closeMessage = "close-" + currentLevel.toString();
 
             try {
                 dos.writeUTF(closeMessage);
@@ -279,9 +279,9 @@ class GameController {
         } else if (level == 3) {
             levelLabel.setGraphic(new ImageView(level3Image));
             createEasyAlien();
-//            createMediumAlien();
-//            createHardAlien();
-            enemyCount = 1;
+            createMediumAlien();
+            createHardAlien();
+            enemyCount = 16;
         } else if (level == 4) {
 
 
@@ -368,7 +368,7 @@ class GameController {
      * This method creates easy aliens.
      */
     private void createEasyAlien() {
-        for (int i = 2; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             Item s = new Item(75 + i * 100, 100, 50, 50, "enemy", 0);
             root.getChildren().add(s);
             Image img = new Image(EASY_ALIEN_IMAGE_URL);
@@ -629,6 +629,14 @@ class GameController {
         timer.stop();
 
         if (currentLevel < 4) {
+            String message = "close-" + currentLevel.toString();
+
+            try {
+                dos.writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             Window owner = mainStage.getScene().getWindow();
             AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
                     "Your score is " + score + "!");
