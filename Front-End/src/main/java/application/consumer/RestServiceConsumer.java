@@ -16,7 +16,7 @@ import java.net.URL;
 
 public class RestServiceConsumer {
 
-    private static final String REST_URL = "http://localhost:8080/";
+    private static final String REST_URL = "144.122.71.144:8080";
 
     public RestServiceConsumer() {
     }

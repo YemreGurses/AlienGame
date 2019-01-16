@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Vector;
 
 public class Server {
+    private final static int SERVER_PORT = 8082;
 
     static Vector<ClientHandler> clientHandlers = new Vector<>();
 
@@ -15,7 +16,7 @@ public class Server {
     static Integer counter = 0;
 
     public static void main(String[] args) throws IOException {
-        ServerSocket ss = new ServerSocket(1234);
+        ServerSocket ss = new ServerSocket(SERVER_PORT);
 
         Socket s;
 

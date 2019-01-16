@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
 
 class GameController {
 
-    private static final String SERVER_IP = "127.0.0.1";
-    private final static int SERVER_PORT = 1234;
+    private static final String SERVER_IP = "144.122.71.144";
+    private final static int SERVER_PORT = 8082;
 
     private static final String EASY_ALIEN_IMAGE_URL = "/images/ship1.png";
     private static final String MEDIUM_ALIEN_IMAGE_URL = "/images/ship2.png";
