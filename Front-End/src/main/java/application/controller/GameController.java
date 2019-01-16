@@ -124,7 +124,7 @@ class GameController {
     void playGame(Stage stage, String id) throws IOException {
         userId = id;
         root.getChildren().remove(0, root.getChildren().size());
-        currentLevel = 3;
+        currentLevel = 1;
 
 
         Thread readMessage = new Thread(() -> {
