@@ -1,7 +1,7 @@
 # Alien Game Application
 
 ## Requirements: 
-Java SDK 9
+Java SDK 8
 
 Lombok Plug in
 
