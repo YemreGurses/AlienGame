@@ -9,9 +9,9 @@ import java.util.Vector;
 
 public class Server {
 
-    static Vector<ClientHandler> ar = new Vector<>();
+    static Vector<ClientHandler> clientHandlers = new Vector<>();
 
-    private static Integer i = 0;
+    private static Integer clientNumber = 0;
     static Integer counter = 0;
 
     public static void main(String[] args) throws IOException {
@@ -29,20 +29,21 @@ public class Server {
 
             System.out.println("Creating a new handler for this client...");
 
-            ClientHandler mtch = new ClientHandler(s, "client " + i, dis, dos);
+            ClientHandler clientHandler = new ClientHandler(s, "client " + clientNumber, dis, dos);
 
-            Thread t = new Thread(mtch);
+            Thread t = new Thread(clientHandler);
 
             System.out.println("Adding this client to active client list");
+            System.out.println("client " + clientNumber);
+            clientHandlers.add(clientHandler);
 
-            ar.add(mtch);
+
+            clientNumber++;
+            if (clientNumber == 2) {
+                clientNumber = 0;
+            }
 
             t.start();
-
-            i++;
-            if (i == 2) {
-                i = 0;
-            }
 
         }
     }
@@ -53,7 +54,6 @@ class ClientHandler implements Runnable {
     private final DataInputStream dis;
     private final DataOutputStream dos;
     private Socket s;
-    private static Integer flag = 0;
 
     ClientHandler(Socket s, String name,
                   DataInputStream dis, DataOutputStream dos) {
@@ -72,31 +72,37 @@ class ClientHandler implements Runnable {
                 received = dis.readUTF();
 
                 System.out.println(received);
-
                 if (received.equals("logout")) {
-                    for (ClientHandler mc : Server.ar) {
+                    for (ClientHandler mc : Server.clientHandlers) {
                         mc.s.close();
                         mc.dis.close();
                         mc.dos.close();
                     }
-                    Server.ar.clear();
+                    Server.clientHandlers.clear();
                     break;
                 } else if (received.equals("level4")) {
                     Server.counter++;
                     if (Server.counter == 2) {
-                        Server.ar.get(1).dos.writeUTF("start");
-                        Server.ar.get(0).dos.writeUTF("start");
+                        System.out.println("starting level 4");
+                        Server.clientHandlers.get(0).dos.writeUTF("start");
+                        Server.clientHandlers.get(1).dos.writeUTF("start");
                         Server.counter = 0;
+                    }
+                } else if (received.contains("user")) {
+                    if (this.name.equals("client 0")) {
+                        Server.clientHandlers.get(1).dos.writeUTF(received);
+                        System.out.println("0dan 1e" + received);
+                    } else if (this.name.equals("client 1")) {
+                        Server.clientHandlers.get(0).dos.writeUTF(received);
+                        System.out.println("1den 0a " + received);
                     }
                 } else {
                     if (this.name.equals("client 0")) {
-                        if (flag != 0) {
-                            Server.ar.get(1).dos.writeUTF(received);
-                            System.out.println("0dan 1e");
-                        }
+                        Server.clientHandlers.get(1).dos.writeUTF(received);
+                        System.out.println("0dan 1e");
+
                     } else if (this.name.equals("client 1")) {
-                        flag = 1;
-                        Server.ar.get(0).dos.writeUTF(received);
+                        Server.clientHandlers.get(0).dos.writeUTF(received);
                         System.out.println("1den 0a");
                     }
                 }

@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,6 +54,13 @@ class GameController {
     private static final Integer WIDTH_OF_SCREEN = 600;
     private static final Integer HEIGHT_OF_SCREEN = 800;
 
+    private InetAddress ip = InetAddress.getByName(SERVER_IP);
+
+    private Socket s = new Socket(ip, SERVER_PORT);
+
+    private DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+    private DataInputStream dis = new DataInputStream(s.getInputStream());
+
 
     private String userId;
 
@@ -76,7 +84,7 @@ class GameController {
 
     private Item player = new Item(270, 740, 60, 60, "player", 1);
 
-    private Item player2 = new Item(270, 740, 60, 60, "player", 2);
+    private Item player2 = new Item(1000, 1000, 60, 60, "player", 2);
 
     private Item finalBoss = new Item(20, 100, 560, 240, "enemy", 0);
 
@@ -103,6 +111,9 @@ class GameController {
         }
     };
 
+    GameController() throws IOException {
+    }
+
     /**
      * This method creates content for game and set Scene for the game.
      *
@@ -115,12 +126,6 @@ class GameController {
         root.getChildren().remove(0, root.getChildren().size());
         currentLevel = 3;
 
-        InetAddress ip = InetAddress.getByName(SERVER_IP);
-
-        Socket s = new Socket(ip, SERVER_PORT);
-
-        DataInputStream dis = new DataInputStream(s.getInputStream());
-        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
         Thread readMessage = new Thread(() -> {
 
@@ -130,20 +135,23 @@ class GameController {
                     System.out.println(msg);
                     if (msg.equals("shoot")) {
                         Platform.runLater(() -> shoot(player2));
-                    } else if (msg.contains("waiting")) {
-                        otherUserID = Integer.valueOf(msg.split("-")[1]);
-                    } else if (msg.equals("level4")) {
                     } else if (msg.equals("start")) {
+                        dos.writeUTF("user-" + userId);
                         TimeUnit.SECONDS.sleep(3);
                         Platform.runLater(() -> {
+                            timeCounter = 0;
                             timer.start();
                             alert.close();
                         });
 
+                    } else if (msg.contains("user")) {
+                        if (!(userId.equals((msg.split("-")[1])))) {
+                            otherUserID = Integer.valueOf(msg.split("-")[1]);
+                        }
                     } else {
-                        String[] coordinate = msg.split("-");
-                        player2.setTranslateX(Double.valueOf(coordinate[0]));
-                        player2.setTranslateY(Double.valueOf(coordinate[1]));
+                        String[] coordinateAndUserId = msg.split("-");
+                        player2.setTranslateX(Double.valueOf(coordinateAndUserId[0]));
+                        player2.setTranslateY(Double.valueOf(coordinateAndUserId[1]));
                     }
 
                 } catch (IOException e) {
@@ -159,29 +167,27 @@ class GameController {
         Scene scene = new Scene(createContent());
         scene.setOnKeyPressed(key -> {
             Thread sendMessage = new Thread(() -> {
+                if (currentLevel == 4 || currentLevel == 5) {
+                    String message = "";
 
-                String message;
-
-                if (currentLevel == 5) {
-                    message = "logout";
-                } else if (currentLevel == 4) {
-                    if (key.getCode() == KeyCode.SPACE) {
-                        message = "shoot";
-                    } else {
-                        double x = player.getTranslateX();
-                        double y = player.getTranslateY();
-                        message = Double.toString(x) + "-" + Double.toString(y);
+                    if (currentLevel == 5) {
+                        message = "logout";
+                    } else if (currentLevel == 4) {
+                        if (key.getCode() == KeyCode.SPACE) {
+                            message = "shoot";
+                        } else {
+                            double x = player.getTranslateX();
+                            double y = player.getTranslateY();
+                            message = Double.toString(x) + "-" + Double.toString(y);
+                        }
                     }
-                } else {
-                    message = "waiting-" + userId;
-                }
 
-                try {
-                    dos.writeUTF(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        dos.writeUTF(message);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-
             });
             if (key.getCode() == KeyCode.A) {
                 if (player.getTranslateX() > 0)
@@ -190,10 +196,10 @@ class GameController {
                 if (player.getTranslateY() > 0)
                     player.moveUp();
             } else if (key.getCode() == KeyCode.D) {
-                if (player.getTranslateX() + 40 < WIDTH_OF_SCREEN)
+                if (player.getTranslateX() + 60 < WIDTH_OF_SCREEN)
                     player.moveRight();
             } else if (key.getCode() == KeyCode.S) {
-                if (player.getTranslateY() + 40 < HEIGHT_OF_SCREEN)
+                if (player.getTranslateY() + 60 < HEIGHT_OF_SCREEN)
                     player.moveDown();
             } else if (key.getCode() == KeyCode.SPACE) {
                 shoot(player);
@@ -277,7 +283,12 @@ class GameController {
 //            createHardAlien();
             enemyCount = 1;
         } else if (level == 4) {
+
+
             player.health = 200;
+            player2.health = 200;
+            player2.setTranslateX(270);
+            player2.setTranslateY(740);
             healthLabel.setText("Health : " + player.getHealth().toString() + "HP");
             removeBullets();
             root.getChildren().remove(levelLabel);
@@ -294,11 +305,6 @@ class GameController {
             timer.stop();
             Window owner = mainStage.getScene().getWindow();
 
-            InetAddress ip = InetAddress.getByName(SERVER_IP);
-
-            Socket s = new Socket(ip, SERVER_PORT);
-
-            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
             String message = "level4";
 
@@ -307,13 +313,12 @@ class GameController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            s.close();
-            dos.close();
 
             alert.setTitle("Waiting for other player!");
             alert.setHeaderText(null);
-            alert.setContentText("Waiting for another player this screen will close automatically when other user connected and game will start immediately!!!");
+            alert.setContentText("Waiting for another player... This screen will close automatically and game will start in 3 seconds !!!");
             alert.initOwner(owner);
+            alert.getDialogPane().lookupButton(ButtonType.OK).setVisible(false);
             alert.show();
 
 
@@ -363,7 +368,7 @@ class GameController {
      * This method creates easy aliens.
      */
     private void createEasyAlien() {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 2; i < 3; i++) {
             Item s = new Item(75 + i * 100, 100, 50, 50, "enemy", 0);
             root.getChildren().add(s);
             Image img = new Image(EASY_ALIEN_IMAGE_URL);
@@ -386,6 +391,7 @@ class GameController {
      * This method updates game screen with timer and creates random fires from aliens and also remove objects when they die.
      */
     private void update() {
+        final Integer[] flag = {0};
         timeCounter += 0.016;
         items().forEach(item -> {
             if (item.type.equals("enemybullet")) {
@@ -405,7 +411,8 @@ class GameController {
                         }
                     }
                     item.dead = true;
-                } else if (item.getBoundsInParent().intersects(player2.getBoundsInParent())) {
+                }
+                if (item.getBoundsInParent().intersects(player2.getBoundsInParent())) {
                     player2.health -= 20;
                     if (player2.health <= 0) {
                         player2.dead = true;
@@ -428,7 +435,7 @@ class GameController {
                         if (currentLevel == 4) {
                             finalBoss.health -= 20;
                             item.dead = true;
-                            bossHealthLabel.setText("Health : " + finalBoss.getHealth().toString() + "HP");
+                            bossHealthLabel.setText("Boss Health : " + finalBoss.getHealth().toString() + "HP");
                             if (finalBoss.health <= 0) {
                                 if (item.player == 1) {
                                     winnerID = Integer.valueOf(userId);
@@ -494,6 +501,9 @@ class GameController {
 
     }
 
+    /**
+     * This method removes all items from scene
+     */
     private void removeItems() {
         root.getChildren().
 
@@ -508,6 +518,9 @@ class GameController {
                 });
     }
 
+    /**
+     * This method removes remaining bullets on the screen
+     */
     private void removeBullets() {
         root.getChildren().
 
@@ -615,49 +628,47 @@ class GameController {
     private void gameOverScene() throws IOException {
         timer.stop();
 
-        InetAddress ip = InetAddress.getByName(SERVER_IP);
+        if (currentLevel < 4) {
+            Window owner = mainStage.getScene().getWindow();
+            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                    "Your score is " + score + "!");
+        } else {
 
-        // establish the connection
-        Socket s = new Socket(ip, SERVER_PORT);
+            String message = "logout";
 
-        // obtaining input and out streams
-        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+            try {
+                dos.writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        String message = "logout";
 
-        try {
-            // write on the output stream
-            dos.writeUTF(message);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Window owner = mainStage.getScene().getWindow();
+
+            RestServiceConsumer restServiceConsumer = new RestServiceConsumer();
+            restServiceConsumer.addScore(userId, score.toString());
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
+            mapper.addMixIn(Player.class, PlayerMixIn.class);
+            User winner2 = mapper.readValue(restServiceConsumer.getUser(userId), User.class);
+            User winner3 = mapper.readValue(restServiceConsumer.getUser(otherUserID.toString()), User.class);
+
+            if (player.dead) {
+                AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                        "Winner is " + winner3.getName() + "!");
+            } else if (player2.dead) {
+                AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                        "Winner is " + winner2.getName() + "!");
+            } else {
+                User winner = mapper.readValue(restServiceConsumer.getUser(winnerID.toString()), User.class);
+                AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
+                        "Winner is " + winner.getName() + "!");
+            }
+
         }
+
         s.close();
         dos.close();
-
-
-        Window owner = mainStage.getScene().getWindow();
-
-        RestServiceConsumer restServiceConsumer = new RestServiceConsumer();
-        restServiceConsumer.addScore(userId, score.toString());
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
-        mapper.addMixIn(Player.class, PlayerMixIn.class);
-        User winner2 = mapper.readValue(restServiceConsumer.getUser(userId), User.class);
-        User winner3 = mapper.readValue(restServiceConsumer.getUser(otherUserID.toString()), User.class);
-
-        if (player.dead) {
-            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
-                    "Winner is " + winner3.getName() + "!");
-        } else if (player2.dead) {
-            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
-                    "Winner is " + winner2.getName() + "!");
-        } else {
-            User winner = mapper.readValue(restServiceConsumer.getUser(winnerID.toString()), User.class);
-            AlertHelper.showAlert(Alert.AlertType.INFORMATION, owner, "Game is Over!",
-                    "Winner is " + winner.getName() + "!");
-        }
-
-
         Parent mainMenu = FXMLLoader.load(getClass().getResource(MAIN_MENU_URL));
 
         mainMenu.setId(userId);
